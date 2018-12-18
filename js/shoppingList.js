@@ -9,36 +9,50 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ShoppingList = function (_React$Component) {
   _inherits(ShoppingList, _React$Component);
 
-  function ShoppingList() {
+  function ShoppingList(props) {
     _classCallCheck(this, ShoppingList);
 
-    return _possibleConstructorReturn(this, (ShoppingList.__proto__ || Object.getPrototypeOf(ShoppingList)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (ShoppingList.__proto__ || Object.getPrototypeOf(ShoppingList)).call(this, props));
+
+    console.log(props);
+    console.log('something happen');
+    _this.list = props.items;
+    _this.listItems = _this.list.map(function (item) {
+      return React.createElement(
+        'li',
+        null,
+        item.item_name
+      );
+    });
+    console.log(_this.listItems);
+    return _this;
   }
 
   _createClass(ShoppingList, [{
-    key: "renderList",
-    value: function renderList() {
+    key: 'renderList',
+    value: function renderList(item) {
+      console.log('item is: ' + item);
       return React.createElement(
-        "li",
+        'li',
         null,
-        "An item"
+        item.item_name
       );
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       return React.createElement(
-        "div",
-        { "class": "shopping-list-section" },
+        'div',
+        { 'class': 'shopping-list-section' },
         React.createElement(
-          "h1",
+          'h1',
           null,
-          "Shopping List"
+          'Shopping List'
         ),
         React.createElement(
-          "div",
-          { "class": "shopping-list-wrap" },
-          renderList()
+          'div',
+          { 'class': 'shopping-list-wrap' },
+          this.listItems
         )
       );
     }

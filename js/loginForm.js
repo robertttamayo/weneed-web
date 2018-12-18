@@ -34,8 +34,28 @@ var LoginForm = function (_React$Component) {
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
-      alert('A name was submitted: ' + this.state.value);
       event.preventDefault();
+      var url = "http://www.roberttamayo.com/shoplist/login.php";
+      fetch(url, {
+        method: 'post',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8;"
+        },
+        body: 'username=' + this.state.username + '&password=' + this.state.password
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        if (data.length && data.length == 1) {
+          console.log(data);
+          console.log('successful login');
+          setCookie('weneed_user', JSON.stringify(data), 365);
+          $('body').removeClass('login-modal-visible');
+          $(document).trigger('login_successful');
+        } else {
+          alert("Sorry, the username or password was incorrect.");
+        }
+        // ReactDOM.render(React.createElement(ShoppingList, { items: data }), document.getElementById('shopping-list-container'));
+      }).catch(function (error) {});
     }
   }, {
     key: 'render',
@@ -47,15 +67,15 @@ var LoginForm = function (_React$Component) {
           'label',
           null,
           'Username:',
-          React.createElement('input', { type: 'text', name: 'username', value: this.state.value, onChange: this.handleChange })
+          React.createElement('input', { type: 'text', placeholder: 'Enter your username', name: 'username', value: this.state.value, onChange: this.handleChange })
         ),
         React.createElement(
           'label',
           null,
           'Password:',
-          React.createElement('input', { type: 'password', name: 'password', value: this.state.password, onChange: this.handleChange })
+          React.createElement('input', { type: 'password', placeholder: 'Enter your password', name: 'password', value: this.state.password, onChange: this.handleChange })
         ),
-        React.createElement('input', { type: 'submit', name: 'submit', value: 'Submit' }),
+        React.createElement('input', { type: 'submit', name: 'submit', value: 'Sign In' }),
         React.createElement('input', { type: 'button', name: 'createaccount', value: 'Create Account' })
       );
     }
@@ -63,3 +83,9 @@ var LoginForm = function (_React$Component) {
 
   return LoginForm;
 }(React.Component);
+
+$(document).on('sign_in_triggered', function () {
+  console.log('sign in triggered handler.');
+  ReactDOM.render(React.createElement(LoginForm, null), document.getElementById('login-modal'));
+  $('body').addClass('login-modal-visible');
+});

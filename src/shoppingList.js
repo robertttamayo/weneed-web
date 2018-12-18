@@ -1,15 +1,26 @@
 class ShoppingList extends React.Component {
-  renderList(){
-    return (<li>An item</li>);
+  constructor(props){
+    super(props);
+    console.log(props);
+    console.log('something happen');
+    this.list = props.items;
+    this.listItems = this.list.map((item)=>
+      <li>{item.item_name}</li>
+    );
+    console.log(this.listItems);
   }
-    render() {
-      return (
-        <div class="shopping-list-section">
-          <h1>Shopping List</h1>
-          <div class="shopping-list-wrap">
-            {renderList()}
-          </div>
+  renderList(item){
+    console.log('item is: ' + item);
+    return (<li>{item.item_name}</li>);
+  }
+  render() {
+    return (
+      <div class="shopping-list-section">
+        <h1>Shopping List</h1>
+        <div class="shopping-list-wrap">
+          {this.listItems}
         </div>
-      );
-    }
+      </div>
+    );
   }
+}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="/css/main.css">
     <!-- <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script> -->
     <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
@@ -8,10 +9,17 @@
     <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
 </head>
 <body>
-    Work in progress.
-    <div id="root"></div>
+    <?php include 'embeds/header.html'; ?>
 
+    <div id="login-modal"></div>
+    <div id="shopping-list-container">
+        Data is reappear here
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/cookies.js"></script>
+    <script src="/js/header.js"></script>
     <script src="/js/loginForm.js"></script>
+    <script src="/js/shoppingList.js"></script>
     <script src="/js/main.js"></script>
 </body>
 </html>
