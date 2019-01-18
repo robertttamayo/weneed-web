@@ -30,8 +30,6 @@ class LoginForm extends React.Component {
         return response.json();
     }).then(function (data) {
         if (data.length && data.length == 1) {
-          console.log(data);
-          console.log('successful login');
           setCookie('weneed_user', JSON.stringify(data), 365);
           $('body').removeClass('login-modal-visible');
           $(document).trigger('login_successful');

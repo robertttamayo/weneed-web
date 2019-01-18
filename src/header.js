@@ -5,6 +5,7 @@ class Header extends React.Component {
         this.state = {
             username: '', 
             password: '',
+            user_id: '',
             hasUserInfo: false
         };
 
@@ -13,41 +14,32 @@ class Header extends React.Component {
 
         this.getUserData();        
         $(document).on('login_successful', ()=>{
-            console.log('login success, getting user data');
             this.getUserData();
         });
     }
     getUserData(){
-        console.log('get user data');
         let data = getCookie('weneed_user');
         if (data != ''){ 
             data = JSON.parse(data)[0];
             
             if (data.user_name) {
                 this.state.username = data.user_name;
-                if (data.user_id) {
-                    this.state.user_id = data.user_id;
-                }
                 this.state.hasUserInfo = true;
+                this.state.user_id = 23;
+                this.setState(this.state);
             } else {
-                this.state.username = '';
-                this.state.hasUserInfo = false;
+                this.setState({hasUserInfo:false, username: ''});
             }
         } else {
-            this.state.username = '';
-            this.state.hasUserInfo = false;
+            this.setState({hasUserInfo:false, username: ''});
         }
     }
     handleSignOut(){
-        console.log('sign out triggered');
         setCookie('weneed_user', '[{}]', 365);
-        this.state.hasUserInfo = false;
-        this.state.username = '';
+        this.setState({hasUserInfo:false, username: ''});
     }
     handleSignIn(){
         $(document).trigger('sign_in_triggered');
-        // open a modal for sign in / create account
-        // ReactDOM.render(<LoginForm />, document.getElementById('login-modal'));
     }
     render(){
         if (this.state.hasUserInfo) {

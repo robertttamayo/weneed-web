@@ -1,16 +1,12 @@
 class ShoppingList extends React.Component {
   constructor(props){
     super(props);
-    console.log(props);
-    console.log('something happen');
     this.list = props.items;
     this.listItems = this.list.map((item)=>
-      <li>{item.item_name}</li>
+      <div>{item.item_name}</div>
     );
-    console.log(this.listItems);
   }
   renderList(item){
-    console.log('item is: ' + item);
     return (<li>{item.item_name}</li>);
   }
   render() {

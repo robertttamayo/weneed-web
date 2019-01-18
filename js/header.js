@@ -17,6 +17,7 @@ var Header = function (_React$Component) {
         _this.state = {
             username: '',
             password: '',
+            user_id: '',
             hasUserInfo: false
         };
 
@@ -25,7 +26,6 @@ var Header = function (_React$Component) {
 
         _this.getUserData();
         $(document).on('login_successful', function () {
-            console.log('login success, getting user data');
             _this.getUserData();
         });
         return _this;
@@ -34,40 +34,32 @@ var Header = function (_React$Component) {
     _createClass(Header, [{
         key: 'getUserData',
         value: function getUserData() {
-            console.log('get user data');
             var data = getCookie('weneed_user');
             if (data != '') {
                 data = JSON.parse(data)[0];
 
                 if (data.user_name) {
                     this.state.username = data.user_name;
-                    if (data.user_id) {
-                        this.state.user_id = data.user_id;
-                    }
                     this.state.hasUserInfo = true;
+                    this.state.user_id = 23;
+                    this.setState(this.state);
                 } else {
-                    this.state.username = '';
-                    this.state.hasUserInfo = false;
+                    this.setState({ hasUserInfo: false, username: '' });
                 }
             } else {
-                this.state.username = '';
-                this.state.hasUserInfo = false;
+                this.setState({ hasUserInfo: false, username: '' });
             }
         }
     }, {
         key: 'handleSignOut',
         value: function handleSignOut() {
-            console.log('sign out triggered');
             setCookie('weneed_user', '[{}]', 365);
-            this.state.hasUserInfo = false;
-            this.state.username = '';
+            this.setState({ hasUserInfo: false, username: '' });
         }
     }, {
         key: 'handleSignIn',
         value: function handleSignIn() {
             $(document).trigger('sign_in_triggered');
-            // open a modal for sign in / create account
-            // ReactDOM.render(<LoginForm />, document.getElementById('login-modal'));
         }
     }, {
         key: 'render',

@@ -6,53 +6,34 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ShoppingList = function (_React$Component) {
-  _inherits(ShoppingList, _React$Component);
+var Toolbar = function (_React$Component) {
+    _inherits(Toolbar, _React$Component);
 
-  function ShoppingList(props) {
-    _classCallCheck(this, ShoppingList);
+    function Toolbar(props) {
+        _classCallCheck(this, Toolbar);
 
-    var _this = _possibleConstructorReturn(this, (ShoppingList.__proto__ || Object.getPrototypeOf(ShoppingList)).call(this, props));
-
-    _this.list = props.items;
-    _this.listItems = _this.list.map(function (item) {
-      return React.createElement(
-        "div",
-        null,
-        item.item_name
-      );
-    });
-    return _this;
-  }
-
-  _createClass(ShoppingList, [{
-    key: "renderList",
-    value: function renderList(item) {
-      return React.createElement(
-        "li",
-        null,
-        item.item_name
-      );
+        return _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, props));
     }
-  }, {
-    key: "render",
-    value: function render() {
-      return React.createElement(
-        "div",
-        { "class": "shopping-list-section" },
-        React.createElement(
-          "h1",
-          null,
-          "Shopping List"
-        ),
-        React.createElement(
-          "div",
-          { "class": "shopping-list-wrap" },
-          this.listItems
-        )
-      );
-    }
-  }]);
 
-  return ShoppingList;
+    _createClass(Toolbar, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                { className: "toolbar-wrap" },
+                React.createElement(
+                    "div",
+                    { className: "wn-button button-add-user" },
+                    "Invite to group"
+                ),
+                React.createElement(
+                    "div",
+                    { className: "wn-button button-add-item" },
+                    "Add new item"
+                )
+            );
+        }
+    }]);
+
+    return Toolbar;
 }(React.Component);
