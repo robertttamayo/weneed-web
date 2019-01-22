@@ -71,7 +71,8 @@ function main() {
       positions: [],
       colors: [],
   }
-
+    var tcc = new TriColorChanger(new Color(0, 0, 1, 1), new Color(0, .5, 1, 1), new Color(0, 1, 1, 1));
+    console.log(tcc);
     var count = 12;
     var ox = 400;
     var oy = 500;
@@ -94,11 +95,14 @@ function main() {
             bottomRight.push({x: x, y: y});
         }
     }
-    
+    var then = 0;
     function update(time){
         // console.log(delta);
         time *= 0.001;
         stateTime = time;
+        var delta = stateTime - then;
+        then = stateTime;
+
         for (var i = 0; i < count; i++) {
             // top left
             x = ox - width - 4*i - 24 * Math.sin(stateTime - Math.PI/6*i);
@@ -124,11 +128,16 @@ function main() {
             bottomRight[i].x = x;
             bottomRight[i].y = y;
         }
+        updateColors(delta);
         render();
         requestAnimationFrame(update);
     }
-    
-    function renderTriangle(current, next, adjacentNext, isEven) {
+    function updateColors(delta) {
+        if (typeof(delta) !== 'NaN') {
+            tcc.update(delta);
+        }
+    }
+    function renderTriangle(current, next, adjacentNext, isEven, isRight) {
         const fieldOfView = 45 * Math.PI / 180;   // in radians
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const zNear = 0.1;
@@ -146,29 +155,38 @@ function main() {
         if (isEven) {
             if (isRight) {
                 var colors = [
-                    0.0,  0.0,  1.0,  1.0,    // 1
-                    0.0,  1.0,  1.0,  1.0,    // 2
-                    0.0,  1.0,  1.0,  1.0,    // 2
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1, 
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
                 ];
             } else {
                 var colors = [
-                    0.0,  0.0,  1.0,  1.0,    // 1
-                    0.0,  1.0,  1.0,  1.0,    // 2
-                    0.0,  0.0,  1.0,  1.0,    // 1
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1,
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
+                    // 0.0,  0.0,  1.0,  1.0,    // 1
+                    // 0.0,  1.0,  1.0,  1.0,    // 2
+                    // 0.0,  0.0,  1.0,  1.0,    // 1
                 ];
             }
         } else {
             if (isRight) {
                 var colors = [
-                    0.0,  1.0,  1.0,  1.0,    // 2
-                    0.0,  0.0,  1.0,  1.0,    // 1
-                    0.0,  0.0,  1.0,  1.0,    // 1
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1,
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1,
+                    // 0.0,  0.0,  1.0,  1.0,    // 1
+                    // 0.0,  1.0,  1.0,  1.0,    // 2
+                    // 0.0,  1.0,  1.0,  1.0,    // 2
                 ];
             } else {
                 var colors = [
-                    0.0,  1.0,  1.0,  1.0,    // 2
-                    0.0,  0.0,  1.0,  1.0,    // 1
-                    0.0,  1.0,  1.0,  1.0,    // 2
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1,
+                    tcc.c1.r, tcc.c1.g, tcc.c1.b, 1,
+                    tcc.c2.r, tcc.c2.g, tcc.c2.b, 1,
+                    // 0.0,  1.0,  1.0,  1.0,    // 2
+                    // 0.0,  0.0,  1.0,  1.0,    // 1
+                    // 0.0,  1.0,  1.0,  1.0,    // 2
                 ];
             }
         }
@@ -272,22 +290,21 @@ function main() {
             isRight = true;
             renderTriangle(current, next, adjacentNext, isEven, isRight);
 
+            // bottom ones are !isEven and !isRight
             current = bottomRight[i];
             next = bottomRight[i + 1];
             adjacentNext = bottomLeft[i + 1];
-            isEven = (i % 2 == 0);
-            isRight = true;
+            isEven = (i % 2 != 0);
+            isRight = false;
             renderTriangle(current, next, adjacentNext, isEven, isRight);
             
             current = bottomLeft[i];
             next = bottomLeft[i + 1];
             adjacentNext = bottomRight[i];
-            isEven = (i % 2 == 0);
+            isEven = (i % 2 != 0);
             isRight = true;
             renderTriangle(current, next, adjacentNext, isEven, isRight);
         }
-        // Draw the scene
-        // drawScene(gl, programInfo, buffers);
     }
     
     

@@ -12,6 +12,7 @@
     <script src="/gl/buffer.js"></script>
     <script src="/gl/render.js"></script> -->
     <script src="/gl/gl-matrix.js"></script>
+    <script src="/gl/colors.js"></script>
     <script src="/gl/main.js"></script>
 
 
