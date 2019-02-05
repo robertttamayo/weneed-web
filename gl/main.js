@@ -71,8 +71,8 @@ function main() {
       positions: [],
       colors: [],
   }
-    var tcc = new TriColorChanger(new Color(0, 0, 1, 1), new Color(0, .5, 1, 1), new Color(0, 1, 1, 1));
-    console.log(tcc);
+    var tcc = new TriColorChanger(new Color(0, 1, 1, 1), new Color(0, .5, 1, 1), new Color(0, 0, 1, 1));
+    // console.log(tcc);
     var count = 12;
     var ox = 400;
     var oy = 500;
@@ -82,7 +82,6 @@ function main() {
     var stateTime = 0;
     init();
     update(0);
-    requestAnimationFrame(update);
     render();
 
     function init() {
@@ -98,7 +97,7 @@ function main() {
     var then = 0;
     function update(time){
         // console.log(delta);
-        time *= 0.001;
+        time *= 0.002;
         stateTime = time;
         var delta = stateTime - then;
         then = stateTime;
@@ -133,8 +132,8 @@ function main() {
         requestAnimationFrame(update);
     }
     function updateColors(delta) {
-        if (typeof(delta) !== 'NaN') {
-            tcc.update(delta);
+        if (!isNaN(delta)) {
+            tcc.update(delta*2);
         }
     }
     function renderTriangle(current, next, adjacentNext, isEven, isRight) {
@@ -193,9 +192,9 @@ function main() {
         // renderTriangle(current.x, current.y, next.x, next.y, adjacentNext.x, adjacentNext.y,
         //     tcc.c1, tcc.c2, tcc.c1);
         var positions = [
-            current.x/gl.canvas.clientWidth, current.y/gl.canvas.clientHeight, 
-            next.x/gl.canvas.clientWidth, next.y/gl.canvas.clientHeight, 
-            adjacentNext.x/gl.canvas.clientWidth, adjacentNext.y/gl.canvas.clientHeight
+            current.x/gl.canvas.clientWidth - .5, current.y/gl.canvas.clientHeight - .5, 
+            next.x/gl.canvas.clientWidth - .5, next.y/gl.canvas.clientHeight - .5, 
+            adjacentNext.x/gl.canvas.clientWidth - .5, adjacentNext.y/gl.canvas.clientHeight - .5
         ];
         var vbuffer = gl.createBuffer();
         buffers.positions.push(vbuffer);
@@ -272,7 +271,6 @@ function main() {
 
          // amount to translate
         
-
         var current, next, adjacentNext, isEven, isRight;
         for (var i = 0; i < count - 1; i++) {
             // console.log(i);
