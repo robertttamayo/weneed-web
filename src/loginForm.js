@@ -58,7 +58,7 @@ class LoginForm extends React.Component {
   }
 }
 $(document).on('sign_in_triggered', function(){
-  console.log('sign in triggered handler.');
+    console.log('sign in triggered handler.');
     ReactDOM.render(<LoginForm />, document.getElementById('login-modal'));
     $('body').addClass('login-modal-visible');
 });

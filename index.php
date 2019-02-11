@@ -12,14 +12,16 @@
     <?php include 'embeds/header.html'; ?>
 
     <div id="login-modal"></div>
-    <div id="shopping-list-container">
-        Data is reappear here
+    <div class="shopping-list-wrapper">
+        <div id="shopping-list-actions"></div>
+        <div id="shopping-list-container"></div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/js/cookies.js"></script>
     <script src="/js/header.js"></script>
     <script src="/js/loginForm.js"></script>
     <script src="/js/shoppingList.js"></script>
+    <script src="/js/actions.js"></script>
     <script src="/js/main.js"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 let account_id = 0;
 
 function init() {
-    if (!preData()) {
+    if (!checkHasUserCookie()) {
+        $(document).trigger('sign_in_triggered');
         return;
     }
-    console.log(`account_id=${account_id}&action=get_items`);
     let url = "http://www.roberttamayo.com/shoplist/index.php";
     fetch(url, {
         method: 'post',
@@ -16,14 +16,16 @@ function init() {
     .then(response => response.json())
     .then(function(data){
         ReactDOM.render(<ShoppingList items={data} />, document.getElementById('shopping-list-container'));
+        let user_data = JSON.parse(getCookie('weneed_user'))[0];
+        ReactDOM.render(<Actions user={user_data}/>, document.getElementById('shopping-list-actions'));
     }).catch(function(error){});
 }
 init();
 
-$(document).on('login_successful', preData);
-$(document).on('init_list', preData);
+$(document).on('login_successful', loadUserData);
+$(document).on('init_list', loadUserData);
 
-function preData(){
+function checkHasUserCookie(){
     let _data = getCookie('weneed_user');
     try {
         let data = JSON.parse(_data)[0];
@@ -33,5 +35,8 @@ function preData(){
         return false;
     }
 }
-
+function loadUserData() {
+    checkHasUserCookie();
+    init();
+}
 

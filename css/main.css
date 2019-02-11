@@ -1,25 +1,188 @@
+@import url("https://fonts.googleapis.com/css?family=Bitter:400,400i,700|Poppins:500,700");
+/* line 13, sass/main.scss */
 body {
-    font-family: sans-serif;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  color: #222222;
+  font-size: 16px;
+  background: url(/img/restaurant_icons.png);
 }
+/* line 19, sass/main.scss */
+body * {
+  box-sizing: border-box;
+}
+
+/* line 23, sass/main.scss */
 #login-modal {
-    position: fixed;
-    display: none;
-    width: 500px;
-    max-width: calc(100vw - 40px);
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: #7dd4a4;
-    padding: 40px;
-    color: white;
-    border: 2px dashed #fff;
-    outline: 2px solid #42c07b;
+  position: fixed;
+  display: none;
+  width: 500px;
+  max-width: calc(100vw - 40px);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #7dd4a4;
+  padding: 40px;
+  color: white;
+  border: 2px dashed #fff;
+  outline: 2px solid #42c07b;
 }
+
+/* line 37, sass/main.scss */
 body.login-modal-visible #login-modal {
-    display: block;
+  display: block;
 }
+
+/* line 40, sass/main.scss */
 #login-modal form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
+
+/* line 46, sass/main.scss */
+div#header {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-align-items: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+  padding: 20px;
+  background: #7dd4a4;
+  border-bottom: 2px dashed white;
+  outline: 2px solid #42c07b;
+}
+/* line 54, sass/main.scss */
+div#header .title {
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  font-size: 40px;
+  color: #21653f;
+}
+/* line 60, sass/main.scss */
+div#header .subtitle {
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  color: white;
+  font-weight: normal;
+}
+
+/* line 68, sass/main.scss */
+#shopping-list-container {
+  padding: 20px;
+}
+/* line 70, sass/main.scss */
+#shopping-list-container li {
+  padding: 5px 0;
+}
+
+/* line 74, sass/main.scss */
+.item-list-purchased {
+  color: #7dd4a4;
+  font-weight: bold;
+  font-style: italic;
+  margin-left: 20px;
+}
+
+/* line 80, sass/main.scss */
+.add-new-item-inline input {
+  border: none;
+  border-bottom: 2px solid #222222;
+  color: #222222;
+  font-size: 16px;
+  font-style: italic;
+  font-family: "Poppins", sans-serif;
+}
+
+/* line 89, sass/main.scss */
+.shopping-list-section h1 {
+  color: #21653f;
+  height: 50px;
+  line-height: 50px;
+  font-size: 28px;
+}
+
+/* line 96, sass/main.scss */
+.shopping-list-wrapper {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: flex-start;
+  -ms-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+/* line 100, sass/main.scss */
+#shopping-list-actions {
+  padding: 20px;
+  background: #7dd4a4;
+  padding: 20px;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  border: 2px dashed white;
+  outline: 2px solid #42c07b;
+  height: auto;
+  width: 300px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-align-items: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+/* line 113, sass/main.scss */
+#shopping-list-actions .shopping-actions {
+  width: 100%;
+}
+/* line 116, sass/main.scss */
+#shopping-list-actions form.add-new-item {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+/* line 119, sass/main.scss */
+#shopping-list-actions input[type="text"] {
+  width: calc(100% - 80px);
+  height: 40px;
+  margin: 0;
+  border-right: none;
+  border: 1px solid white;
+  font-family: "Poppins", sans-serif;
+  text-indent: 15px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+/* line 130, sass/main.scss */
+#shopping-list-actions input[type="submit"] {
+  border: 1px solid white;
+  background: #42c07b;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  height: 40px;
+  width: 80px;
+  line-height: 40px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* line 144, sass/main.scss */
+.shopping-actions-header h2 {
+  margin-top: 0;
+}
+
+/*# sourceMappingURL=main.css.map */
