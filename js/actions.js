@@ -16,10 +16,41 @@ var Actions = function (_React$Component) {
 
         console.log(props);
         _this.user = props.user;
+        _this.endpoint = "http://www.roberttamayo.com/shoplist/index.php";
+        _this.addNewItem = _this.addNewItem.bind(_this);
         return _this;
     }
 
     _createClass(Actions, [{
+        key: "addNewItem",
+        value: function addNewItem(event) {
+            event.preventDefault();
+            var data = new FormData(event.target);
+            var post = {
+                action: "new_item",
+                item_name: data.get('item_name'),
+                account_id: this.user.user_account_id,
+                user_id: this.user.user_id
+            };
+
+            var urlParameters = Object.entries(post).map(function (e) {
+                return e.join('=');
+            }).join('&');
+            console.log(urlParameters);
+            console.log(post);
+            fetch(this.endpoint, {
+                method: 'post',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8;"
+                },
+                body: urlParameters
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log(data);
+            }).catch(function (error) {});
+        }
+    }, {
         key: "render",
         value: function render() {
             return React.createElement(
@@ -39,7 +70,7 @@ var Actions = function (_React$Component) {
                 ),
                 React.createElement(
                     "form",
-                    { "class": "add-new-item" },
+                    { method: "post", "class": "add-new-item", onSubmit: this.addNewItem },
                     React.createElement("input", { type: "text", name: "item_name", placeholder: "Add something else" }),
                     React.createElement("input", { type: "submit", value: "Add" })
                 )

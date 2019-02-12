@@ -11,6 +11,7 @@ class Header extends React.Component {
 
         this.handleSignOut = this.handleSignOut.bind(this);
         this.handleSignIn = this.handleSignIn.bind(this);
+        this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
 
         this.getUserData();        
         $(document).on('login_successful', ()=>{
@@ -41,12 +42,20 @@ class Header extends React.Component {
     handleSignIn(){
         $(document).trigger('sign_in_triggered');
     }
+    toggleMobileMenu() {
+        $('body').toggleClass('mobile-menu-open');
+    }
     render(){
         if (this.state.hasUserInfo) {
             return (
-                <div class="user-info">
-                    <div class="user-name">{this.state.username}</div>
-                    <div class="sign-out" onClick={this.handleSignOut}>Sign Out</div>
+                <div class="menu-wrap-wrap">
+                    <div class="mobile-menu-trigger" onClick={this.toggleMobileMenu}><i class="fas fa-bars"></i></div>
+                    <div class="menu-wrap">
+                        <div class="user-info">
+                            <div class="user-name">{this.state.username}</div>
+                            <div class="sign-out" onClick={this.handleSignOut}>Sign Out</div>
+                        </div>
+                    </div>
                 </div>
             );
         } else {

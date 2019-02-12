@@ -20,16 +20,25 @@ var Toolbar = function (_React$Component) {
         value: function render() {
             return React.createElement(
                 "div",
-                { className: "toolbar-wrap" },
+                { className: "toolbar-wrap-wrap" },
                 React.createElement(
                     "div",
-                    { className: "wn-button button-add-user" },
-                    "Invite to group"
+                    { "class": "mobile-menu-icon" },
+                    React.createElement("i", { "class": "fas fa-bars" })
                 ),
                 React.createElement(
                     "div",
-                    { className: "wn-button button-add-item" },
-                    "Add new item"
+                    { className: "toolbar-wrap" },
+                    React.createElement(
+                        "div",
+                        { className: "wn-button button-add-user" },
+                        "Invite to group"
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "wn-button button-add-item" },
+                        "Add new item"
+                    )
                 )
             );
         }

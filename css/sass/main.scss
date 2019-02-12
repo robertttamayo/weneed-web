@@ -4,6 +4,8 @@ $dark: #222222;
 $light: #21653f;
 $blue: #7dadd4;
 $blue-shadow: #4489c1;
+$gray-subtle: #aaaaaa;
+$green-alt: #a4d47d;
 
 @import url('https://fonts.googleapis.com/css?family=Bitter:400,400i,700|Poppins:500,700');
 
@@ -66,16 +68,25 @@ div#header {
     }
 }
 #shopping-list-container {
-    padding: 20px;
     li {
         padding: 5px 0;
     }
 }
 .item-list-purchased {
-    color: $green;
+    color: $green-alt;
     font-weight: bold;
     font-style: italic;
     margin-left: 20px;
+    
+    label {
+        margin-right: 10px;
+    }
+    &.is-purchased {
+        color: $blue-shadow;
+    }
+    input[type="checkbox"] {
+        // display: none;
+    }
 }
 .add-new-item-inline input {
     border: none;
@@ -86,6 +97,8 @@ div#header {
     font-family: $sans;
 }
 .shopping-list-section {
+    width: 320px;
+    margin-top: 30px;
     h1 {
         color: $light;
         height: 50px;
@@ -95,19 +108,22 @@ div#header {
 }
 .shopping-list-wrapper {
     @include flex();
-    @include justify-content(flex-start);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex-direction(column);
+}
+.shopping-list-wrap {
+    ul {
+        padding: 0;
+        list-style-type: none;
+    }
 }
 #shopping-list-actions {
-    padding: 20px;
-    background: $green;
-    padding: 20px;
     margin-top: 50px;
     margin-left: 50px;
     margin-right: 50px;
-    border: 2px dashed white;
-    outline: 2px solid $green-shadow;
     height: auto;
-    width: 300px;
+    width: 320px;
     @include flex();
     @include align-items(center);
     .shopping-actions {
@@ -121,21 +137,21 @@ div#header {
         height: 40px;
         margin: 0;
         border-right: none;
-        border: 1px solid white;
+        border: 1px solid $green-shadow;
         font-family: $sans;
         text-indent: 15px;
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
     }
     input[type="submit"] {
-        border: 1px solid white;
+        border: 1px solid $green-shadow;
         background: $green-shadow;
         color: white;
         font-weight: bold;
         font-size: 16px;
         height: 40px;
         width: 80px;
-        line-height: 40px;
+        line-height: 36px;
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
     }
@@ -143,5 +159,52 @@ div#header {
 .shopping-actions-header {
     h2 {
         margin-top: 0;
+        color: $light;
+    }
+}
+.item-list-top {
+    @include flex();
+    @include justify-content(space-between);
+}
+.item-list-bottom {
+    color: $gray-subtle;
+}
+@media (max-width: 768px) {
+    div#header {
+        @include align-items(flex-start);
+        .title {
+            font-size: 28px;
+        }
+        .subtitle {
+            font-size: 18px;
+        }
+    }
+    #shopping-list-actions {
+        margin-top: 0;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+    .shopping-list-wrapper {
+        padding: 20px;
+    }
+    .shopping-list-section {
+        width: 100%;
+    }
+    #shopping-list-container {
+        width: 100%;
+    }
+    .menu-wrap {
+        display: none;
+        background: white;
+        padding: 20px;
+    }
+    .mobile-menu-open {
+        .menu-wrap {
+            display: block;
+        }
+    }
+    .mobile-menu-trigger {
+        color: $light;
     }
 }

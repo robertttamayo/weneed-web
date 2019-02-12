@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Bitter:400,400i,700|Poppins:500,700");
-/* line 13, sass/main.scss */
+/* line 15, sass/main.scss */
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
@@ -7,12 +7,12 @@ body {
   font-size: 16px;
   background: url(/img/restaurant_icons.png);
 }
-/* line 19, sass/main.scss */
+/* line 21, sass/main.scss */
 body * {
   box-sizing: border-box;
 }
 
-/* line 23, sass/main.scss */
+/* line 25, sass/main.scss */
 #login-modal {
   position: fixed;
   display: none;
@@ -28,19 +28,19 @@ body * {
   outline: 2px solid #42c07b;
 }
 
-/* line 37, sass/main.scss */
+/* line 39, sass/main.scss */
 body.login-modal-visible #login-modal {
   display: block;
 }
 
-/* line 40, sass/main.scss */
+/* line 42, sass/main.scss */
 #login-modal form {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-/* line 46, sass/main.scss */
+/* line 48, sass/main.scss */
 div#header {
   display: -webkit-box;
   display: -moz-box;
@@ -58,14 +58,14 @@ div#header {
   border-bottom: 2px dashed white;
   outline: 2px solid #42c07b;
 }
-/* line 54, sass/main.scss */
+/* line 56, sass/main.scss */
 div#header .title {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
   font-size: 40px;
   color: #21653f;
 }
-/* line 60, sass/main.scss */
+/* line 62, sass/main.scss */
 div#header .subtitle {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
@@ -74,24 +74,28 @@ div#header .subtitle {
   font-weight: normal;
 }
 
-/* line 68, sass/main.scss */
-#shopping-list-container {
-  padding: 20px;
-}
-/* line 70, sass/main.scss */
+/* line 71, sass/main.scss */
 #shopping-list-container li {
   padding: 5px 0;
 }
 
-/* line 74, sass/main.scss */
+/* line 75, sass/main.scss */
 .item-list-purchased {
-  color: #7dd4a4;
+  color: #a4d47d;
   font-weight: bold;
   font-style: italic;
   margin-left: 20px;
 }
+/* line 81, sass/main.scss */
+.item-list-purchased label {
+  margin-right: 10px;
+}
+/* line 84, sass/main.scss */
+.item-list-purchased.is-purchased {
+  color: #4489c1;
+}
 
-/* line 80, sass/main.scss */
+/* line 91, sass/main.scss */
 .add-new-item-inline input {
   border: none;
   border-bottom: 2px solid #222222;
@@ -101,7 +105,12 @@ div#header .subtitle {
   font-family: "Poppins", sans-serif;
 }
 
-/* line 89, sass/main.scss */
+/* line 99, sass/main.scss */
+.shopping-list-section {
+  width: 320px;
+  margin-top: 30px;
+}
+/* line 102, sass/main.scss */
 .shopping-list-section h1 {
   color: #21653f;
   height: 50px;
@@ -109,30 +118,37 @@ div#header .subtitle {
   font-size: 28px;
 }
 
-/* line 96, sass/main.scss */
+/* line 109, sass/main.scss */
 .shopping-list-wrapper {
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: flex-start;
-  -ms-justify-content: flex-start;
-  justify-content: flex-start;
+  -webkit-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-align-items: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 
-/* line 100, sass/main.scss */
+/* line 116, sass/main.scss */
+.shopping-list-wrap ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 121, sass/main.scss */
 #shopping-list-actions {
-  padding: 20px;
-  background: #7dd4a4;
-  padding: 20px;
   margin-top: 50px;
   margin-left: 50px;
   margin-right: 50px;
-  border: 2px dashed white;
-  outline: 2px solid #42c07b;
   height: auto;
-  width: 300px;
+  width: 320px;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
@@ -142,11 +158,11 @@ div#header .subtitle {
   -webkit-align-items: center;
   align-items: center;
 }
-/* line 113, sass/main.scss */
+/* line 129, sass/main.scss */
 #shopping-list-actions .shopping-actions {
   width: 100%;
 }
-/* line 116, sass/main.scss */
+/* line 132, sass/main.scss */
 #shopping-list-actions form.add-new-item {
   display: -webkit-box;
   display: -moz-box;
@@ -154,35 +170,110 @@ div#header .subtitle {
   display: -webkit-flex;
   display: flex;
 }
-/* line 119, sass/main.scss */
+/* line 135, sass/main.scss */
 #shopping-list-actions input[type="text"] {
   width: calc(100% - 80px);
   height: 40px;
   margin: 0;
   border-right: none;
-  border: 1px solid white;
+  border: 1px solid #42c07b;
   font-family: "Poppins", sans-serif;
   text-indent: 15px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-/* line 130, sass/main.scss */
+/* line 146, sass/main.scss */
 #shopping-list-actions input[type="submit"] {
-  border: 1px solid white;
+  border: 1px solid #42c07b;
   background: #42c07b;
   color: white;
   font-weight: bold;
   font-size: 16px;
   height: 40px;
   width: 80px;
-  line-height: 40px;
+  line-height: 36px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
 
-/* line 144, sass/main.scss */
+/* line 160, sass/main.scss */
 .shopping-actions-header h2 {
   margin-top: 0;
+  color: #21653f;
+}
+
+/* line 165, sass/main.scss */
+.item-list-top {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* line 169, sass/main.scss */
+.item-list-bottom {
+  color: #aaaaaa;
+}
+
+@media (max-width: 768px) {
+  /* line 173, sass/main.scss */
+  div#header {
+    -ms-align-items: flex-start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+  }
+  /* line 175, sass/main.scss */
+  div#header .title {
+    font-size: 28px;
+  }
+  /* line 178, sass/main.scss */
+  div#header .subtitle {
+    font-size: 18px;
+  }
+
+  /* line 182, sass/main.scss */
+  #shopping-list-actions {
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  /* line 188, sass/main.scss */
+  .shopping-list-wrapper {
+    padding: 20px;
+  }
+
+  /* line 191, sass/main.scss */
+  .shopping-list-section {
+    width: 100%;
+  }
+
+  /* line 194, sass/main.scss */
+  #shopping-list-container {
+    width: 100%;
+  }
+
+  /* line 197, sass/main.scss */
+  .menu-wrap {
+    display: none;
+    background: white;
+    padding: 20px;
+  }
+
+  /* line 203, sass/main.scss */
+  .mobile-menu-open .menu-wrap {
+    display: block;
+  }
+
+  /* line 207, sass/main.scss */
+  .mobile-menu-trigger {
+    color: #21653f;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

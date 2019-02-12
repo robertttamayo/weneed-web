@@ -28,8 +28,33 @@ var ShoppingList = function (_React$Component) {
   }
 
   _createClass(ShoppingList, [{
+    key: "formatDate",
+    value: function formatDate(date) {
+      var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      return monthNames[monthIndex] + " " + day;
+    }
+  }, {
+    key: "toggleCheckboxText",
+    value: function toggleCheckboxText(event) {
+      console.log(event.target);
+      var $target = $(event.target).filter('input[type="checkbox"]');
+      console.log($target);
+      $target.parent().toggleClass('is-purchased');
+      if ($target.parent().hasClass('is-purchased')) {
+        $target.parent().find('label').text('Got it!');
+      } else {
+        $target.parent().find('label').text('Got it?');
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
 
       this.listItems = this.list.map(function (item) {
         var _React$createElement;
@@ -43,14 +68,33 @@ var ShoppingList = function (_React$Component) {
             "data-item-date-added": item.item_date_added
           }, _defineProperty(_React$createElement, "data-item-id", item.item_id), _defineProperty(_React$createElement, "data-item-is-purchased", item.item_is_purchased), _defineProperty(_React$createElement, "data-item-name", item.item_name), _defineProperty(_React$createElement, "data-item-user-id", item.item_user_id), _React$createElement),
           React.createElement(
-            "span",
-            { "class": "item-list-name" },
-            item.item_name
+            "div",
+            { "class": "item-list-top" },
+            React.createElement(
+              "span",
+              { "class": "item-list-name" },
+              item.item_name
+            ),
+            React.createElement(
+              "span",
+              { "class": "item-list-purchased", onClick: _this2.toggleCheckboxText },
+              React.createElement(
+                "label",
+                { "for": 'item-checkbox' + item.item_id },
+                "Got it?"
+              ),
+              React.createElement("input", { id: 'item-checkbox' + item.item_id, type: "checkbox", name: 'item-checkbox' + item.item_id })
+            )
           ),
           React.createElement(
-            "span",
-            { "class": "item-list-purchased" },
-            "Got it!"
+            "div",
+            { "class": "item-list-bottom" },
+            React.createElement(
+              "span",
+              { "class": "item-list-added-on" },
+              "Added ",
+              _this2.formatDate(new Date(item.item_date_added))
+            )
           )
         );
       });
@@ -58,14 +102,13 @@ var ShoppingList = function (_React$Component) {
         "div",
         { "class": "shopping-list-section" },
         React.createElement(
-          "h1",
-          null,
-          "Shopping List"
-        ),
-        React.createElement(
           "div",
           { "class": "shopping-list-wrap" },
-          this.listItems
+          React.createElement(
+            "ul",
+            null,
+            this.listItems
+          )
         )
       );
     }

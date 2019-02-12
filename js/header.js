@@ -23,6 +23,7 @@ var Header = function (_React$Component) {
 
         _this.handleSignOut = _this.handleSignOut.bind(_this);
         _this.handleSignIn = _this.handleSignIn.bind(_this);
+        _this.toggleMobileMenu = _this.toggleMobileMenu.bind(_this);
 
         _this.getUserData();
         $(document).on('login_successful', function () {
@@ -62,21 +63,39 @@ var Header = function (_React$Component) {
             $(document).trigger('sign_in_triggered');
         }
     }, {
+        key: 'toggleMobileMenu',
+        value: function toggleMobileMenu() {
+            $('body').toggleClass('mobile-menu-open');
+        }
+    }, {
         key: 'render',
         value: function render() {
             if (this.state.hasUserInfo) {
                 return React.createElement(
                     'div',
-                    { 'class': 'user-info' },
+                    { 'class': 'menu-wrap-wrap' },
                     React.createElement(
                         'div',
-                        { 'class': 'user-name' },
-                        this.state.username
+                        { 'class': 'mobile-menu-trigger', onClick: this.toggleMobileMenu },
+                        React.createElement('i', { 'class': 'fas fa-bars' })
                     ),
                     React.createElement(
                         'div',
-                        { 'class': 'sign-out', onClick: this.handleSignOut },
-                        'Sign Out'
+                        { 'class': 'menu-wrap' },
+                        React.createElement(
+                            'div',
+                            { 'class': 'user-info' },
+                            React.createElement(
+                                'div',
+                                { 'class': 'user-name' },
+                                this.state.username
+                            ),
+                            React.createElement(
+                                'div',
+                                { 'class': 'sign-out', onClick: this.handleSignOut },
+                                'Sign Out'
+                            )
+                        )
                     )
                 );
             } else {
