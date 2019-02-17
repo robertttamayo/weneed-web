@@ -48,6 +48,18 @@ var Actions = function (_React$Component) {
                 return response.json();
             }).then(function (data) {
                 console.log(data);
+                var _data = {
+                    account_id: data.item_account_id,
+                    account_name: "",
+                    item_account_id: data.item_account_id,
+                    item_date_added: data.item_date_added,
+                    item_id: data.item_id,
+                    item_is_purchased: "0",
+                    item_name: data.item_name,
+                    item_user_id: data.item_user_id
+                };
+                $('input[name="item_name"]').val('').focus();
+                $(document).trigger('add_item', _data);
             }).catch(function (error) {});
         }
     }, {
@@ -58,7 +70,8 @@ var Actions = function (_React$Component) {
                 { "class": "shopping-actions",
                     "data-user-id": this.user.user_id,
                     "data-user-account-id": this.user.user_account_id,
-                    "data-user-name": this.user.user_name },
+                    "data-user-name": this.user.user_name
+                },
                 React.createElement(
                     "div",
                     { "class": "shopping-actions-header" },
@@ -71,7 +84,7 @@ var Actions = function (_React$Component) {
                 React.createElement(
                     "form",
                     { method: "post", "class": "add-new-item", onSubmit: this.addNewItem },
-                    React.createElement("input", { type: "text", name: "item_name", placeholder: "Add something else" }),
+                    React.createElement("input", { required: true, type: "text", name: "item_name", placeholder: "Add something else" }),
                     React.createElement("input", { type: "submit", value: "Add" })
                 )
             );

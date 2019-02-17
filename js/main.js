@@ -39,3 +39,19 @@ function loadUserData() {
     checkHasUserCookie();
     init();
 }
+
+$(document).on('modify_item', function (event, data) {
+    console.log('modify_item triggered');
+    console.log(data);
+    var url = "http://www.roberttamayo.com/shoplist/index.php";
+    $.ajax(url, {
+        data: data,
+        method: "POST"
+    }).then(function (_data) {
+        console.log('modified item succesfully');
+        console.log(_data);
+    }, function (_error) {
+        console.log('error on modify item');
+        console.log(_error);
+    });
+});

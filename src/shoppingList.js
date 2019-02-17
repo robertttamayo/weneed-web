@@ -2,9 +2,14 @@ class ShoppingList extends React.Component {
   constructor(props){
     super(props);
     this.list = props.items;
+    console.log(this.list);
     this.listItems = this.list.map((item)=>
       <div>{item.item_name}</div>
     );
+    $(document).on('add_item', (event, item) => {
+      this.list.unshift(item);
+      this.setState({list: this.list});
+    });
   }
 
   formatDate(date) {
@@ -24,12 +29,24 @@ class ShoppingList extends React.Component {
   toggleCheckboxText(event) {
     console.log(event.target);
     let $target = $(event.target).filter('input[type="checkbox"]');
-    console.log($target);
-    $target.parent().toggleClass('is-purchased');
-    if ($target.parent().hasClass('is-purchased')) {
-      $target.parent().find('label').text('Got it!');
-    } else {
-      $target.parent().find('label').text('Got it?');
+    if ($target.length) {
+      $target.parent().toggleClass('is-purchased');
+      let item_id = $target.parent().attr('data-purchased-item-id');
+      if ($target.parent().hasClass('is-purchased')) {
+        $target.parent().find('label').text('Got it!');
+        $(document).trigger('modify_item', {
+          item_id,
+          action: 'modify_item',
+          item_is_purchased: "1"
+        });
+      } else {
+        $target.parent().find('label').text('Got it?');
+        $(document).trigger('modify_item', {
+          item_id,
+          action: 'modify_item',
+          item_is_purchased: "0"
+        });
+      }
     }
   }
   render() {
@@ -46,7 +63,7 @@ class ShoppingList extends React.Component {
         >
           <div class="item-list-top">
             <span class="item-list-name">{item.item_name}</span>
-            <span class="item-list-purchased" onClick={this.toggleCheckboxText}>
+            <span class="item-list-purchased" data-purchased-item-id={item.item_id} onClick={this.toggleCheckboxText}>
               <label for={'item-checkbox' + item.item_id}>Got it?</label>
               <input id={'item-checkbox' + item.item_id} type="checkbox" name={'item-checkbox' + item.item_id}/>
             </span>

@@ -29,6 +29,18 @@ class Actions extends React.Component {
         .then(response => response.json())
         .then(function(data){
             console.log(data);
+            let _data = {
+                account_id: data.item_account_id,
+                account_name: "",
+                item_account_id: data.item_account_id,
+                item_date_added: data.item_date_added,
+                item_id: data.item_id,
+                item_is_purchased: "0",
+                item_name: data.item_name,
+                item_user_id: data.item_user_id
+            }
+            $('input[name="item_name"]').val('').focus();
+            $(document).trigger('add_item', _data);
         }).catch(function(error){});
     }
     render() {
@@ -36,12 +48,13 @@ class Actions extends React.Component {
             <div class="shopping-actions"
             data-user-id={this.user.user_id}
             data-user-account-id={this.user.user_account_id}
-            data-user-name={this.user.user_name}>
+            data-user-name={this.user.user_name}
+            >
                 <div class="shopping-actions-header">
                     <h2>What do we need?</h2>
                 </div>
                 <form method="post" class="add-new-item" onSubmit={this.addNewItem}>
-                    <input type="text" name="item_name" placeholder="Add something else"/> 
+                    <input required type="text" name="item_name" placeholder="Add something else"/> 
                     <input type="submit" value="Add"/>
                 </form>
             </div>

@@ -40,3 +40,18 @@ function loadUserData() {
     init();
 }
 
+$(document).on('modify_item', function(event, data){
+    console.log('modify_item triggered');
+    console.log(data);
+    let url = "http://www.roberttamayo.com/shoplist/index.php";
+    $.ajax(url, {
+        data,
+        method: "POST"
+    }).then((_data)=>{
+        console.log('modified item succesfully');
+        console.log(_data);
+    }, (_error)=>{
+        console.log('error on modify item');
+        console.log(_error);
+    });
+});

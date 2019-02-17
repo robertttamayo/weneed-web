@@ -17,12 +17,17 @@ var ShoppingList = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (ShoppingList.__proto__ || Object.getPrototypeOf(ShoppingList)).call(this, props));
 
     _this.list = props.items;
+    console.log(_this.list);
     _this.listItems = _this.list.map(function (item) {
       return React.createElement(
         "div",
         null,
         item.item_name
       );
+    });
+    $(document).on('add_item', function (event, item) {
+      _this.list.unshift(item);
+      _this.setState({ list: _this.list });
     });
     return _this;
   }
@@ -43,12 +48,24 @@ var ShoppingList = function (_React$Component) {
     value: function toggleCheckboxText(event) {
       console.log(event.target);
       var $target = $(event.target).filter('input[type="checkbox"]');
-      console.log($target);
-      $target.parent().toggleClass('is-purchased');
-      if ($target.parent().hasClass('is-purchased')) {
-        $target.parent().find('label').text('Got it!');
-      } else {
-        $target.parent().find('label').text('Got it?');
+      if ($target.length) {
+        $target.parent().toggleClass('is-purchased');
+        var item_id = $target.parent().attr('data-purchased-item-id');
+        if ($target.parent().hasClass('is-purchased')) {
+          $target.parent().find('label').text('Got it!');
+          $(document).trigger('modify_item', {
+            item_id: item_id,
+            action: 'modify_item',
+            item_is_purchased: "1"
+          });
+        } else {
+          $target.parent().find('label').text('Got it?');
+          $(document).trigger('modify_item', {
+            item_id: item_id,
+            action: 'modify_item',
+            item_is_purchased: "0"
+          });
+        }
       }
     }
   }, {
@@ -77,7 +94,7 @@ var ShoppingList = function (_React$Component) {
             ),
             React.createElement(
               "span",
-              { "class": "item-list-purchased", onClick: _this2.toggleCheckboxText },
+              { "class": "item-list-purchased", "data-purchased-item-id": item.item_id, onClick: _this2.toggleCheckboxText },
               React.createElement(
                 "label",
                 { "for": 'item-checkbox' + item.item_id },
