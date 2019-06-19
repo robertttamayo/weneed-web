@@ -405,17 +405,6 @@ function drawScene(gl, programInfo, buffers) {
         gl.enableVertexAttribArray(
             programInfo.attribLocations.vertexColor);
         });
-        
-    // gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
-    // gl.vertexAttribPointer(
-    //     programInfo.attribLocations.vertexColor,
-    //     numComponents,
-    //     type,
-    //     normalize,
-    //     stride,
-    //     offset);
-    // gl.enableVertexAttribArray(
-    //     programInfo.attribLocations.vertexColor);
   }
   gl.useProgram(programInfo.program);
   gl.uniformMatrix4fv(
@@ -431,7 +420,6 @@ function drawScene(gl, programInfo, buffers) {
     const vertexCount = 3;
     gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
   }
-//   console.log('here');
 }
 
 //
@@ -482,25 +470,4 @@ function loadShader(gl, type, source) {
   }
 
   return shader;
-}
-
-function debug(){
-
-  log("list of used attributes");
-  log("-----------------------");
-  
-  var numAttribs = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
-  for (var ii = 0; ii < numAttribs; ++ii) {
-    var attribInfo = gl.getActiveAttrib(shaderProgram, ii);
-    if (!attribInfo) {
-      break;
-    }
-    log(gl.getAttribLocation(shaderProgram, attribInfo.name), attribInfo.name);
-  }
-  
-  function log(...args) {
-     var div = document.createElement("div");
-     div.textContent = [...args].join(" ");
-     document.body.appendChild(div);
-  }
 }
