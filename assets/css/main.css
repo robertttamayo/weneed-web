@@ -5,7 +5,7 @@ body {
   margin: 0;
   color: #222222;
   font-size: 16px;
-  background: url(/img/restaurant_icons.png);
+  background: url(/assets/img/restaurant_icons.png);
 }
 /* line 21, sass/main.scss */
 body * {
@@ -14,33 +14,38 @@ body * {
 
 /* line 25, sass/main.scss */
 #login-modal {
-  position: fixed;
-  display: none;
   width: 500px;
   max-width: calc(100vw - 40px);
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   background: #7dd4a4;
   padding: 40px;
   color: white;
   border: 2px dashed #fff;
   outline: 2px solid #42c07b;
+  margin: auto;
+  margin-top: 50px;
 }
 
-/* line 39, sass/main.scss */
+/* line 36, sass/main.scss */
 body.login-modal-visible #login-modal {
   display: block;
 }
 
-/* line 42, sass/main.scss */
+/* line 39, sass/main.scss */
 #login-modal form {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
-  flex-direction: row;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-align-items: center;
+  -webkit-align-items: center;
   align-items: center;
 }
 
-/* line 48, sass/main.scss */
+/* line 45, sass/main.scss */
 div#header {
   display: -webkit-box;
   display: -moz-box;
@@ -58,14 +63,14 @@ div#header {
   border-bottom: 2px dashed white;
   outline: 2px solid #42c07b;
 }
-/* line 56, sass/main.scss */
+/* line 53, sass/main.scss */
 div#header .title {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
   font-size: 40px;
   color: #21653f;
 }
-/* line 62, sass/main.scss */
+/* line 59, sass/main.scss */
 div#header .subtitle {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
@@ -74,28 +79,28 @@ div#header .subtitle {
   font-weight: normal;
 }
 
-/* line 71, sass/main.scss */
+/* line 68, sass/main.scss */
 #shopping-list-container li {
   padding: 5px 0;
 }
 
-/* line 75, sass/main.scss */
+/* line 72, sass/main.scss */
 .item-list-purchased {
   color: #a4d47d;
   font-weight: bold;
   font-style: italic;
   margin-left: 20px;
 }
-/* line 81, sass/main.scss */
+/* line 78, sass/main.scss */
 .item-list-purchased label {
   margin-right: 10px;
 }
-/* line 84, sass/main.scss */
+/* line 81, sass/main.scss */
 .item-list-purchased.is-purchased {
   color: #4489c1;
 }
 
-/* line 91, sass/main.scss */
+/* line 88, sass/main.scss */
 .add-new-item-inline input {
   border: none;
   border-bottom: 2px solid #222222;
@@ -105,12 +110,12 @@ div#header .subtitle {
   font-family: "Poppins", sans-serif;
 }
 
-/* line 99, sass/main.scss */
+/* line 96, sass/main.scss */
 .shopping-list-section {
   width: 320px;
   margin-top: 30px;
 }
-/* line 102, sass/main.scss */
+/* line 99, sass/main.scss */
 .shopping-list-section h1 {
   color: #21653f;
   height: 50px;
@@ -118,7 +123,7 @@ div#header .subtitle {
   font-size: 28px;
 }
 
-/* line 109, sass/main.scss */
+/* line 106, sass/main.scss */
 .shopping-list-wrapper {
   display: -webkit-box;
   display: -moz-box;
@@ -136,13 +141,13 @@ div#header .subtitle {
   flex-direction: column;
 }
 
-/* line 116, sass/main.scss */
+/* line 113, sass/main.scss */
 .shopping-list-wrap ul {
   padding: 0;
   list-style-type: none;
 }
 
-/* line 121, sass/main.scss */
+/* line 118, sass/main.scss */
 #shopping-list-actions {
   margin-top: 50px;
   margin-left: 50px;
@@ -158,11 +163,11 @@ div#header .subtitle {
   -webkit-align-items: center;
   align-items: center;
 }
-/* line 129, sass/main.scss */
+/* line 126, sass/main.scss */
 #shopping-list-actions .shopping-actions {
   width: 100%;
 }
-/* line 132, sass/main.scss */
+/* line 129, sass/main.scss */
 #shopping-list-actions form.add-new-item {
   display: -webkit-box;
   display: -moz-box;
@@ -170,7 +175,7 @@ div#header .subtitle {
   display: -webkit-flex;
   display: flex;
 }
-/* line 135, sass/main.scss */
+/* line 132, sass/main.scss */
 #shopping-list-actions input[type="text"] {
   width: calc(100% - 80px);
   height: 40px;
@@ -182,7 +187,7 @@ div#header .subtitle {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-/* line 146, sass/main.scss */
+/* line 143, sass/main.scss */
 #shopping-list-actions input[type="submit"] {
   border: 1px solid #42c07b;
   background: #42c07b;
@@ -196,13 +201,13 @@ div#header .subtitle {
   border-bottom-right-radius: 4px;
 }
 
-/* line 160, sass/main.scss */
+/* line 157, sass/main.scss */
 .shopping-actions-header h2 {
   margin-top: 0;
   color: #21653f;
 }
 
-/* line 165, sass/main.scss */
+/* line 162, sass/main.scss */
 .item-list-top {
   display: -webkit-box;
   display: -moz-box;
@@ -214,28 +219,28 @@ div#header .subtitle {
   justify-content: space-between;
 }
 
-/* line 169, sass/main.scss */
+/* line 166, sass/main.scss */
 .item-list-bottom {
   color: #aaaaaa;
 }
 
 @media (max-width: 768px) {
-  /* line 173, sass/main.scss */
+  /* line 170, sass/main.scss */
   div#header {
     -ms-align-items: flex-start;
     -webkit-align-items: flex-start;
     align-items: flex-start;
   }
-  /* line 175, sass/main.scss */
+  /* line 172, sass/main.scss */
   div#header .title {
     font-size: 28px;
   }
-  /* line 178, sass/main.scss */
+  /* line 175, sass/main.scss */
   div#header .subtitle {
     font-size: 18px;
   }
 
-  /* line 182, sass/main.scss */
+  /* line 179, sass/main.scss */
   #shopping-list-actions {
     margin-top: 0;
     margin-left: 0;
@@ -243,34 +248,34 @@ div#header .subtitle {
     width: 100%;
   }
 
-  /* line 188, sass/main.scss */
+  /* line 185, sass/main.scss */
   .shopping-list-wrapper {
     padding: 20px;
   }
 
-  /* line 191, sass/main.scss */
+  /* line 188, sass/main.scss */
   .shopping-list-section {
     width: 100%;
   }
 
-  /* line 194, sass/main.scss */
+  /* line 191, sass/main.scss */
   #shopping-list-container {
     width: 100%;
   }
 
-  /* line 197, sass/main.scss */
+  /* line 194, sass/main.scss */
   .menu-wrap {
     display: none;
     background: white;
     padding: 20px;
   }
 
-  /* line 203, sass/main.scss */
+  /* line 200, sass/main.scss */
   .mobile-menu-open .menu-wrap {
     display: block;
   }
 
-  /* line 207, sass/main.scss */
+  /* line 204, sass/main.scss */
   .mobile-menu-trigger {
     color: #21653f;
   }

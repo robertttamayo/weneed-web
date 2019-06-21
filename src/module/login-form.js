@@ -1,8 +1,15 @@
-class LoginForm extends React.Component {
+import React from "react";
+import { endpoints } from "./endpoints";
+import {setCookie} from "./cookies";
+
+export class LoginForm extends React.Component {
   constructor(props) {
     super(props);
-    
-    this.state = {username: '', password: ''};
+
+    this.state = {
+      username: '',
+      password: ''
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,25 +26,26 @@ class LoginForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    let url = "http://www.roberttamayo.com/shoplist/login.php";
-    fetch(url, {
-        method: 'post',
-        headers: {
-            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8;"
-        },
-        body: `username=${this.state.username}&password=${this.state.password}`
-    }).then(function (response) {
-        return response.json();
-    }).then(function (data) {
+    $.ajax(endpoints.login, {
+      method: 'POST',
+      data: {
+        username: this.state.username,
+        password: this.state.password,
+      }
+    }).then((response) => {
+      try {
+        let data = JSON.parse(response);
         if (data.length && data.length == 1) {
           setCookie('weneed_user', JSON.stringify(data), 365);
-          $('body').removeClass('login-modal-visible');
-          $(document).trigger('login_successful');
+          this.props.onLogin();
         } else {
           alert("Sorry, the username or password was incorrect.");
         }
-        // ReactDOM.render(React.createElement(ShoppingList, { items: data }), document.getElementById('shopping-list-container'));
-    }).catch(function (error) {});
+      } catch (e) {
+        console.log(e);
+      }
+      // ReactDOM.render(React.createElement(ShoppingList, { items: data }), document.getElementById('shopping-list-container'));
+    });
   }
 
   render() {
@@ -48,7 +56,7 @@ class LoginForm extends React.Component {
           <input type="text" placeholder="Enter your username" name="username" value={this.state.value} onChange={this.handleChange} />
         </label>
         <label>
-            Password:
+          Password:
           <input type="password" placeholder="Enter your password" name="password" value={this.state.password} onChange={this.handleChange} />
         </label>
         <input type="submit" name="submit" value="Sign In" />
@@ -57,8 +65,4 @@ class LoginForm extends React.Component {
     );
   }
 }
-$(document).on('sign_in_triggered', function(){
-    console.log('sign in triggered handler.');
-    ReactDOM.render(<LoginForm />, document.getElementById('login-modal'));
-    $('body').addClass('login-modal-visible');
-});
+

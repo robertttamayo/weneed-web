@@ -17,32 +17,29 @@ body {
     margin: 0;
     color: $dark;
     font-size: 16px;
-    background: url(/img/restaurant_icons.png);
+    background: url(/assets/img/restaurant_icons.png);
     * {
         box-sizing: border-box;
     }
 }
 #login-modal {
-    position: fixed;
-    display: none;
     width: 500px;
     max-width: calc(100vw - 40px);
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     background: $green;
     padding: 40px;
     color: white;
     border: 2px dashed #fff;
     outline: 2px solid $green-shadow;
+    margin: auto;
+    margin-top: 50px;
 }
 body.login-modal-visible #login-modal {
     display: block;
 }
 #login-modal form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    @include flex();
+    @include flex-direction(column);
+    @include align-items(center);
 }
 
 div#header {

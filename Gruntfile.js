@@ -1,6 +1,17 @@
+const webpackConfig = require('./webpack.config');
+
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        webpack: {
+            options: {
+                // stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+                stats: true
+            },
+            prod: webpackConfig,
+            dev: Object.assign({ watch: false }, webpackConfig)
+        },
 
         // compile sass
         sass: {
@@ -11,20 +22,44 @@ module.exports = function(grunt) {
                     sourcemap: 'auto',
                 },
                 files: {
-                    'css/main.css': 'css/core.scss'
+                    'assets/css/main.css': 'assets/css/core.scss'
                 }
             }
         },
 
-        // run tasks again on changes in js and css files
+        // minify css
+        cssmin: {
+            options: {
+                sourceMap: 'auto',
+                rebase: true
+            },
+            dist: {
+                files: {
+                    'assets/min/styles.min.css': [
+                        'assets/css/main.css'
+                    ]
+                }
+            }
+        },
+
         watch: {
-            css: {
+            web: {
                 files: [
-                    'css/*.scss',
-                    'css/*/*.scss'
+                    'src/*.js',
+                    'src/module/*.js'
                 ],
                 tasks: [
-                    'sass'
+                    'webpack'
+                ]
+            },
+            css: {
+                files: [
+                    'assets/css/*.scss',
+                    'assets/css/*/*.scss',
+                ],
+                tasks: [
+                    'sass',
+                    'cssmin'
                 ]
             },
             all: {
@@ -32,14 +67,18 @@ module.exports = function(grunt) {
                     'Gruntfile.js'
                 ],
                 tasks: [
-                    'sass'
+                    'webpack',
+                    'sass',
+                    'cssmin'
                 ]
             }
-        },
+        }
     });
 
+    grunt.loadNpmTasks('grunt-webpack');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['sass', 'watch']);
+    grunt.registerTask('default', ['webpack', 'sass', 'cssmin', 'watch']);
 };
