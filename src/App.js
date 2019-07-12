@@ -116,3 +116,29 @@ class App extends React.Component {
     }
 }
 ReactDOM.render(<App />, document.getElementById('app'));
+
+// if ('serviceWorker' in navigator) {
+//     window.addEventListener('load', function() {
+//         navigator.serviceWorker.register('/sw.js').then(function(registration) {
+//         // Registration was successful
+//         console.log(registration);
+//         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+//         }, function(err) {
+//         // registration failed :(
+//         console.log('ServiceWorker registration failed: ', err);
+//         });
+//     });
+// } else {
+//     console.log('something happened');
+// }
+// if (!"Notification" in window) {
+//     console.log("This browser does not support notifications.");
+// } else {
+//     console.log("notification supported");
+//     Notification.requestPermission().then(function(result) {
+//         console.log(result);
+//         window.setTimeout(()=>{
+//             var notification = new Notification("Hi there!");
+//         }, 5000);
+//     });
+// }

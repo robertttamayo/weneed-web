@@ -24,7 +24,7 @@ function loadUserData() {
 $(document).on('modify_item', function(event, data){
     console.log('modify_item triggered');
     console.log(data);
-    let url = "http://www.roberttamayo.com/shoplist/index.php";
+    let url = "https://www.roberttamayo.com/shoplist/index.php";
     $.ajax(url, {
         data,
         method: "POST"

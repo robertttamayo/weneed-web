@@ -1,3 +1,5 @@
+import React from "react";
+
 import {getCookie, setCookie} from "./cookies";
 
 export class Header extends React.Component {

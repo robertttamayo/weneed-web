@@ -4,6 +4,9 @@ import {endpoints} from "./endpoints";
 export class ShoppingList extends React.Component {
   constructor(props){
     super(props);
+    this.updateItem = this.updateItem.bind(this);
+    this.toggleCheckboxText = this.toggleCheckboxText.bind(this);
+
     $(document).on('add_item', (event, item) => {
       this.list.unshift(item);
       this.setState({list: this.list});
@@ -37,22 +40,35 @@ export class ShoppingList extends React.Component {
     if ($target.length) {
       $target.parent().toggleClass('is-purchased');
       let item_id = $target.parent().attr('data-purchased-item-id');
+      let item_is_purchased = "0";
       if ($target.parent().hasClass('is-purchased')) {
         $target.parent().find('label').text('Got it!');
-        $(document).trigger('modify_item', {
-          item_id,
-          action: 'modify_item',
-          item_is_purchased: "1"
-        });
+        item_is_purchased = "1";
       } else {
         $target.parent().find('label').text('Got it?');
-        $(document).trigger('modify_item', {
-          item_id,
-          action: 'modify_item',
-          item_is_purchased: "0"
-        });
       }
+      let data = {
+        item_id,
+        action: 'modify_item',
+        item_is_purchased
+      }
+      this.updateItem(data);
     }
+  }
+  updateItem(data){
+      console.log('modify_item triggered');
+      console.log(data);
+      let url = endpoints.modify_item;
+      $.ajax(url, {
+          data,
+          method: "POST"
+      }).then((_data)=>{
+          console.log('modified item succesfully');
+          console.log(_data);
+      }, (_error)=>{
+          console.log('error on modify item');
+          console.log(_error);
+      });
   }
   render() {
     this.listItems = this.props.items.map((item)=>
