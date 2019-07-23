@@ -49,26 +49,30 @@ export class Actions extends React.Component {
     }
     render() {
         const { user } = this.props;
-        return(
-            <div className="shopping-actions"
-            data-user-id={user.user_id}
-            data-user-account-id={user.user_account_id}
-            data-user-name={user.user_name}
-            >
-                <div className="shopping-actions-header">
-                    <h2>What do we need?</h2>
-                </div>
-                <form method="post" className="add-new-item" onSubmit={this.addNewItem}>
-                    <input required 
-                    type="text" 
-                    value={this.state.item_name} 
-                    onChange={this.onChange} 
-                    name="item_name" 
-                    placeholder="Add something else"/> 
+        if (user) {
+            return(
+                <div className="shopping-actions"
+                data-user-id={user.user_id}
+                data-user-account-id={user.user_account_id}
+                data-user-name={user.user_name}
+                >
+                    <div className="shopping-actions-header">
+                        <h2>What do we need?</h2>
+                    </div>
+                    <form method="post" className="add-new-item" onSubmit={this.addNewItem}>
+                        <input required 
+                        type="text" 
+                        value={this.state.item_name} 
+                        onChange={this.onChange} 
+                        name="item_name" 
+                        placeholder="Add something else"/> 
 
-                    <input type="submit" value="Add"/>
-                </form>
-            </div>
-        );
+                        <input type="submit" value="Add"/>
+                    </form>
+                </div>
+            );
+        } else {
+            return '';
+        }
     }
 }

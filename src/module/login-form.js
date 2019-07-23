@@ -35,8 +35,13 @@ export class LoginForm extends React.Component {
     }).then((response) => {
       try {
         let data = JSON.parse(response);
+        console.log('data', data);
         if (data.length && data.length == 1) {
           setCookie('weneed_user', JSON.stringify(data), 365);
+          $(document).trigger('register_user_db', {
+            user_name: data[0].user_name,
+            user_id: data[0].user_id
+          });
           this.props.onLogin();
         } else {
           alert("Sorry, the username or password was incorrect.");

@@ -34,6 +34,7 @@ class App extends React.Component {
         }
     }
     onLogin() {
+        console.log('on login called');
         let user_data = JSON.parse(getCookie('weneed_user'))[0];
         this.setState({user_data});
         this.fetchItems();
