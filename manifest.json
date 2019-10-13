@@ -1,0 +1,30 @@
+{
+  "version": "0.1",
+  "name": "We Need",
+  "short_name": "We Need",
+  "description": "Share a shopping list with your crew",
+  "launch_path": "/",
+  "start_url": "/",
+  "theme_color": "#42c07b",
+  "background_color": "#42c07b",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/assets/img/ic_launcher192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/img/splash.png",
+      "sizes": "512x512"
+    }
+  ],
+  "developer": {
+    "name": "Robert Tamayo",
+    "url": "https://www.roberttamayo.com/"
+  },
+  "permissions": {
+    "desktop-notification": {
+      "description": "Needed for creating system notifications."
+    }
+  }
+}

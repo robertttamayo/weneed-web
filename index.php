@@ -5,7 +5,10 @@
     <meta name="theme-color" content="#42c07b">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="manifest" href="/manifest.json">
 
+    <link rel="icon" href="ic_laucher192.png">
+    <link rel="apple-touch-icon" href="ic_laucher192.png">
 </head>
 <body>
     <?php include 'embeds/header.html'; ?>
@@ -41,7 +44,7 @@
     var dbVersion = 1;
 
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('serviceworker.js', {scope: './'}).then(function(registration){
+        navigator.serviceWorker.register('/serviceworker.js').then(function(registration){
             console.log('successfully successed');
             var serviceWorker;
             if (registration.installing) {
@@ -61,6 +64,24 @@
             registration.getNotifications(options).then((notifications)=>{
                 console.log(notifications);
             });
+            var subOptions = {
+                userVisibleOnly: true,
+                // applicationServerKey: 
+            }
+            registration.pushManager.subscribe(subOptions).then(
+                function(pushSubscription) {
+                    console.log(pushSubscription.endpoint);
+                    // The push subscription details needed by the application
+                    // server are now available, and can be sent to it using,
+                    // for example, an XMLHttpRequest.
+                }, function(error) {
+                    // During development it often helps to log errors to the
+                    // console. In a production environment it might make sense to
+                    // also report information about errors back to the
+                    // application server.
+                    console.log(error);
+                }
+            );
         }).catch(function(error) {
             // Something went wrong during registration. The serviceworker.js file
             // might be unavailable or contain a syntax error.
@@ -85,9 +106,11 @@
             };
             let user_name = data.user_name;
             let user_id = data.user_id;
+            let user_account_id = data.user_account_id;
             let user_data = {
                 user_name,
-                user_id
+                user_id,
+                user_account_id,
             }
             var userObjectStore = db.transaction("users", "readwrite").objectStore("users");
             console.log(user_data);
@@ -96,15 +119,70 @@
         };
     });
     $(document).on('update_items_db', (event, data) => {
+        console.log('updating items in db');
         /*
-            itemData = [
-                {item_id: 0, item_name: 'eggs', item_is_purchased: 0, item_added_by: 1},
-                {item_id: 1, item_name: 'bananas', item_is_purchased: 0, item_added_by: 1},
-            ]
-            */
-        var customerObjectStore = db.transaction("items", "readwrite").objectStore("items");
-        let items = data.items;
+        itemData = [
+            {item_id: 0, item_name: 'eggs', item_is_purchased: 0, item_added_by: 1},
+            {item_id: 1, item_name: 'bananas', item_is_purchased: 0, item_added_by: 1},
+        ]
+        */
+        var itemObjectStore = db.transaction("items", "readwrite").objectStore("items");
+        var stored_items = itemObjectStore.getAll().onsuccess = function(event) {
+            let new_items = []; // items found on server but not in local db
+            let purchased_items = []; // items we had on local db but don't exist on server
+            let server_item_ids = []; // item ids from server
+            let db_item_ids = []; // item ids from local db
 
+            let server_items = data.items;
+            let db_items = event.target.result;
+            
+            server_items.forEach((item)=>{
+                server_item_ids.push(item.item_id);
+            });
+
+            db_items.forEach((item)=>{
+                if (db_item_ids.indexOf(item.item_id) == -1) {
+                    db_item_ids.push(item.item_id);
+                }
+            });
+            
+            server_items.forEach((item)=>{
+                if (db_item_ids.indexOf(item.item_id) == -1) {
+                    itemObjectStore.add(item);
+                    new_items.push(item);
+                }
+            });
+
+            db_items.forEach((item)=>{
+                if (server_item_ids.indexOf(item.item_id) == -1) {
+                    purchased_items.push(item);
+                }
+            });
+            
+            let message = '';
+            if (new_items.length) {
+                // we need to alert that there are new items
+                message += 'New items added: ';
+                for (let i = 0; i < new_items.length; i++) {
+                    message += new_items[i].item_name;
+                    if (i < new_items.length - 1) {
+                        message += ', ';
+                    }
+                }
+            }
+            if (purchased_items.length) {
+                // we need to alert that items have been purchased
+                message += 'Items have been purchased: ';
+                for (let i = 0; i < purchased_items.length; i++) {
+                    message += purchased_items[i].item_name;
+                    if (i < purchased_items.length - 1) {
+                        message += ', ';
+                    }
+                    itemObjectStore.delete(purchased_items[i].item_id);
+                }
+            }
+            console.log(message);
+        };
     });
 
     //create indexeddb
@@ -168,6 +246,17 @@
         }
     };
 
+    if (!"Notification" in window) {
+        console.log("This browser does not support notifications.");
+    } else {
+        console.log("notification supported");
+        Notification.requestPermission().then(function(result) {
+            console.log(result);
+            // window.setTimeout(()=>{
+            //     var notification = new Notification("Hi there!");
+            // }, 5000);
+        });
+    }
 
     </script>
 

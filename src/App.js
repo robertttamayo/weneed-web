@@ -67,7 +67,9 @@ class App extends React.Component {
         }).then((response) => {
             try {
                 let items = JSON.parse(response);
+                console.log(items);
                 this.setState({items});
+                $(document).trigger('update_items_db', {items});
             } catch (e) {
                 console.error(e);
                 console.log(response);
@@ -132,14 +134,4 @@ ReactDOM.render(<App />, document.getElementById('app'));
 // } else {
 //     console.log('something happened');
 // }
-// if (!"Notification" in window) {
-//     console.log("This browser does not support notifications.");
-// } else {
-//     console.log("notification supported");
-//     Notification.requestPermission().then(function(result) {
-//         console.log(result);
-//         window.setTimeout(()=>{
-//             var notification = new Notification("Hi there!");
-//         }, 5000);
-//     });
-// }
+

@@ -40,7 +40,8 @@ export class LoginForm extends React.Component {
           setCookie('weneed_user', JSON.stringify(data), 365);
           $(document).trigger('register_user_db', {
             user_name: data[0].user_name,
-            user_id: data[0].user_id
+            user_id: data[0].user_id,
+            user_account_id: data[0].user_account_id,
           });
           this.props.onLogin();
         } else {
