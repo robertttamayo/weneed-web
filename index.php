@@ -64,24 +64,24 @@
             registration.getNotifications(options).then((notifications)=>{
                 console.log(notifications);
             });
-            var subOptions = {
-                userVisibleOnly: true,
-                // applicationServerKey: 
-            }
-            registration.pushManager.subscribe(subOptions).then(
-                function(pushSubscription) {
-                    console.log(pushSubscription.endpoint);
-                    // The push subscription details needed by the application
-                    // server are now available, and can be sent to it using,
-                    // for example, an XMLHttpRequest.
-                }, function(error) {
-                    // During development it often helps to log errors to the
-                    // console. In a production environment it might make sense to
-                    // also report information about errors back to the
-                    // application server.
-                    console.log(error);
-                }
-            );
+            // var subOptions = {
+            //     userVisibleOnly: true,
+            //     // applicationServerKey: 
+            // }
+            // registration.pushManager.subscribe(subOptions).then(
+            //     function(pushSubscription) {
+            //         console.log(pushSubscription.endpoint);
+            //         // The push subscription details needed by the application
+            //         // server are now available, and can be sent to it using,
+            //         // for example, an XMLHttpRequest.
+            //     }, function(error) {
+            //         // During development it often helps to log errors to the
+            //         // console. In a production environment it might make sense to
+            //         // also report information about errors back to the
+            //         // application server.
+            //         console.log(error);
+            //     }
+            // );
         }).catch(function(error) {
             // Something went wrong during registration. The serviceworker.js file
             // might be unavailable or contain a syntax error.
@@ -118,7 +118,7 @@
 
         };
     });
-    $(document).on('update_items_db', (event, data) => {
+    $(document).on('update_items_db', async (event, data) => {
         console.log('updating items in db');
         /*
         itemData = [
@@ -126,12 +126,20 @@
             {item_id: 1, item_name: 'bananas', item_is_purchased: 0, item_added_by: 1},
         ]
         */
-        var itemObjectStore = db.transaction("items", "readwrite").objectStore("items");
-        var stored_items = itemObjectStore.getAll().onsuccess = function(event) {
-            let new_items = []; // items found on server but not in local db
-            let purchased_items = []; // items we had on local db but don't exist on server
-            let server_item_ids = []; // item ids from server
-            let db_item_ids = []; // item ids from local db
+        var itemTransaction = db.transaction(["items"], "readwrite");
+
+        var itemObjectStore = itemTransaction.objectStore("items");
+
+        itemTransaction.onerror = function(event) {
+            console.log('Transaction not opened due to error: ' + transaction.error);
+        };
+
+        let new_items = []; // items found on server but not in local db
+        let purchased_items = []; // items we had on local db but don't exist on server
+        let server_item_ids = []; // item ids from server
+        let db_item_ids = []; // item ids from local db
+
+        var stored_items = itemObjectStore.getAll().onsuccess = async function(event) {
 
             let server_items = data.items;
             let db_items = event.target.result;
@@ -158,7 +166,7 @@
                     purchased_items.push(item);
                 }
             });
-            
+
             let message = '';
             if (new_items.length) {
                 // we need to alert that there are new items
@@ -170,7 +178,12 @@
                     }
                 }
             }
+
+            console.log("db_items:", db_items);
+            console.log("server_items:", server_items);
+            console.log("purchased_items:", purchased_items);
             if (purchased_items.length) {
+                console.log(purchased_items);
                 // we need to alert that items have been purchased
                 message += 'Items have been purchased: ';
                 for (let i = 0; i < purchased_items.length; i++) {
@@ -178,11 +191,14 @@
                     if (i < purchased_items.length - 1) {
                         message += ', ';
                     }
-                    itemObjectStore.delete(purchased_items[i].item_id);
+                    
+                    console.log("Deleting item: " + purchased_items[i].item_id + ", " + purchased_items[i].item_name);
+                    await itemObjectStore.delete(purchased_items[i].db_item_id);
                 }
             }
             console.log(message);
         };
+        
     });
 
     //create indexeddb
@@ -220,7 +236,7 @@
         });
         
         // create indices
-        objectStoreItems.createIndex("item_name", "item_name", { unique: false }); // item_id is unique
+        // objectStoreItems.createIndex("item_name", "item_name", { unique: false }); // item_id is unique
         objectStoreItems.createIndex("item_id", "item_id", { unique: true }); // item_id is unique
         
 

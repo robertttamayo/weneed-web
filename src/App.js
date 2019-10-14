@@ -17,6 +17,7 @@ class App extends React.Component {
         this.onLogin = this.onLogin.bind(this);
         this.onUpdateList = this.onUpdateList.bind(this);
         this.onAddToList = this.onAddToList.bind(this);
+        this.updateItem = this.updateItem.bind(this);
     
         let user_data = null;
 
@@ -49,13 +50,39 @@ class App extends React.Component {
             items: [],
         });
     }
+    updateItem(data){
+        console.log('updating item', data);
+        let url = endpoints.modify_item;
+        // console.log(data);
+        $.ajax(url, {
+            data,
+            method: "POST"
+        }).then((_data)=>{
+            console.log('modified item succesfully');
+            console.log(_data);
+            let items = [];
+            if (data.item_is_purchased) {
+                this.state.items.forEach((item)=>{
+                    if (item.item_id != data.item_id) {
+                        items.push(item);
+                    }
+                });
+            }
+            $(document).trigger('update_items_db', {items});
+        }, (_error)=>{
+            console.log('error on modify item');
+            console.log(_error);
+        });
+    }
     onAddToList(item){
         let items = this.state.items;
         items.unshift(item);
         this.setState({items});
+        $(document).trigger('update_items_db', {items});
     }
     onUpdateList(items) {
         this.setState({items});
+        $(document).trigger('update_items_db', {items});
     }
     fetchItems() {
         $.ajax(endpoints.main, {
@@ -103,7 +130,8 @@ class App extends React.Component {
                         <div id="shopping-list-container">
                             
                             <ShoppingList
-                            items={this.state.items}/>
+                            items={this.state.items}
+                            updateItem={this.updateItem}/>
                         </div>
                         ) : ('')
                         }

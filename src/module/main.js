@@ -1,6 +1,6 @@
 let account_id = 0;
 
-
+console.log("this file is part of the app");
 init();
 
 $(document).on('login_successful', loadUserData);
@@ -31,6 +31,7 @@ $(document).on('modify_item', function(event, data){
     }).then((_data)=>{
         console.log('modified item succesfully');
         console.log(_data);
+        // $(document).trigger('update_items_db', {items});
     }, (_error)=>{
         console.log('error on modify item');
         console.log(_error);

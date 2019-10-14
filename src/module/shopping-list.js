@@ -55,20 +55,8 @@ export class ShoppingList extends React.Component {
       this.updateItem(data);
     }
   }
-  updateItem(data){
-      console.log('modify_item triggered');
-      console.log(data);
-      let url = endpoints.modify_item;
-      $.ajax(url, {
-          data,
-          method: "POST"
-      }).then((_data)=>{
-          console.log('modified item succesfully');
-          console.log(_data);
-      }, (_error)=>{
-          console.log('error on modify item');
-          console.log(_error);
-      });
+  updateItem(data) {
+    this.props.updateItem(data);
   }
   render() {
     this.listItems = this.props.items.map((item)=>
