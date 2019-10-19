@@ -1,6 +1,6 @@
-let baseUrl = "https://www.roberttamayo.com/";
+let baseUrl = "https://www.weneedapp.com/";
 export let endpoints = {
-    main: `${baseUrl}shoplist/index.php`,
-    login: `${baseUrl}shoplist/login.php`,
-    modify_item: `${baseUrl}shoplist/index.php`,
+    main: `${baseUrl}api/index.php`,
+    login: `${baseUrl}api/login.php`,
+    modify_item: `${baseUrl}api/index.php`,
 }

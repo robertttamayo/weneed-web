@@ -1,5 +1,4 @@
 export function setCookie(cname, cvalue, exdays) {
-    console.log('set cookie called');
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+ d.toUTCString();

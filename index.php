@@ -45,7 +45,7 @@
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/serviceworker.js').then(function(registration){
-            console.log('successfully successed');
+            // console.log('successfully successed');
             var serviceWorker;
             if (registration.installing) {
                 serviceWorker = registration.installing;
@@ -55,33 +55,56 @@
                 serviceWorker = registration.active;
             }
             if (serviceWorker) {
-                console.log(serviceWorker.state);
+                // console.log(serviceWorker.state);
                 serviceWorker.addEventListener('statechange', function(e) {
                     console.log(e.target.state);
                 });
             }
             var options = { tag : 'user_alerts' };
             registration.getNotifications(options).then((notifications)=>{
-                console.log(notifications);
+                console.log('notifications', notifications);
             });
-            // var subOptions = {
-            //     userVisibleOnly: true,
-            //     // applicationServerKey: 
-            // }
-            // registration.pushManager.subscribe(subOptions).then(
-            //     function(pushSubscription) {
-            //         console.log(pushSubscription.endpoint);
-            //         // The push subscription details needed by the application
-            //         // server are now available, and can be sent to it using,
-            //         // for example, an XMLHttpRequest.
-            //     }, function(error) {
-            //         // During development it often helps to log errors to the
-            //         // console. In a production environment it might make sense to
-            //         // also report information about errors back to the
-            //         // application server.
-            //         console.log(error);
-            //     }
-            // );
+            var subOptions = {
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array("BPaFNyC6dn_WkvLyUw9-EsXTykbCrt1eMKgzmdNTiHpxa5KTQHPpdHXI8oAB7VpbiR5X6AkOpOzalfZNogJUcOo")
+            }
+            registration.pushManager.subscribe(subOptions).then(
+                function(pushSubscription) {
+                    var user_info = getCookie('weneed_user');
+                    var user_id = '';
+                    if (user_info != '') {
+                        try {
+                            var user_data = JSON.parse(user_info)[0];
+                            user_id = user_data.user_id;
+                            var subscription = JSON.stringify(pushSubscription);
+                            $.ajax({
+                                url: 'https://www.weneedapp.com/api/subscription.php',
+                                method: 'POST',
+                                data: {
+                                    subscription: subscription,
+                                    user_id: user_id
+                                }
+                            }).then((response)=>{
+                                console.log(response);
+                            });
+                        } catch (e) {
+                            console.log(e);
+                        }
+                    } else {
+                        console.log("user data is nothing");
+                    }
+                    
+                    // The push subscription details needed by the application
+                    // server are now available, and can be sent to it using,
+                    // for example, an XMLHttpRequest.
+                }, function(error) {
+                    // During development it often helps to log errors to the
+                    // console. In a production environment it might make sense to
+                    // also report information about errors back to the
+                    // application server.
+                    console.log(error);
+                }
+            );
         }).catch(function(error) {
             // Something went wrong during registration. The serviceworker.js file
             // might be unavailable or contain a syntax error.
@@ -179,11 +202,7 @@
                 }
             }
 
-            console.log("db_items:", db_items);
-            console.log("server_items:", server_items);
-            console.log("purchased_items:", purchased_items);
             if (purchased_items.length) {
-                console.log(purchased_items);
                 // we need to alert that items have been purchased
                 message += 'Items have been purchased: ';
                 for (let i = 0; i < purchased_items.length; i++) {
@@ -192,7 +211,6 @@
                         message += ', ';
                     }
                     
-                    console.log("Deleting item: " + purchased_items[i].item_id + ", " + purchased_items[i].item_name);
                     await itemObjectStore.delete(purchased_items[i].db_item_id);
                 }
             }
@@ -265,7 +283,7 @@
     if (!"Notification" in window) {
         console.log("This browser does not support notifications.");
     } else {
-        console.log("notification supported");
+        // console.log("notification supported");
         Notification.requestPermission().then(function(result) {
             console.log(result);
             // window.setTimeout(()=>{
@@ -274,6 +292,31 @@
         });
     }
 
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/')
+        ;
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+        }
+        return "";   
+    }
     </script>
 
 </body>

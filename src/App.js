@@ -51,15 +51,12 @@ class App extends React.Component {
         });
     }
     updateItem(data){
-        console.log('updating item', data);
         let url = endpoints.modify_item;
         // console.log(data);
         $.ajax(url, {
             data,
             method: "POST"
         }).then((_data)=>{
-            console.log('modified item succesfully');
-            console.log(_data);
             let items = [];
             if (data.item_is_purchased) {
                 this.state.items.forEach((item)=>{
@@ -70,7 +67,6 @@ class App extends React.Component {
             }
             $(document).trigger('update_items_db', {items});
         }, (_error)=>{
-            console.log('error on modify item');
             console.log(_error);
         });
     }
@@ -94,12 +90,10 @@ class App extends React.Component {
         }).then((response) => {
             try {
                 let items = JSON.parse(response);
-                console.log(items);
                 this.setState({items});
                 $(document).trigger('update_items_db', {items});
             } catch (e) {
-                console.error(e);
-                console.log(response);
+                console.log(e, response);
             }
         });
     }
