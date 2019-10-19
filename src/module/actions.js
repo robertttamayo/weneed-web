@@ -31,6 +31,7 @@ export class Actions extends React.Component {
                 user_id: this.props.user.user_id
             }
         }).then((response) => {
+            console.log(response);
             let itemData = JSON.parse(response);
             let item = {
                 account_id: itemData.item_account_id,

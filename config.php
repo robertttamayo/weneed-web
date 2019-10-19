@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 const DB_NAME = "robtam10_shopper";
 const DB_USERNAME = "robtam10_shopper";
 const DB_PASSWORD = "db25p!K@25c0dE";

@@ -26,7 +26,24 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('push', function(event) {
-    console.log('Push Detected', event);
+    if (!(self.Notification && self.Notification.permission === 'granted')) {
+        return;
+    } else {
+        console.log("here in the receiver");
+    }
+    const sendNotification = body => {
+        // you could refresh a notification badge here with postMessage API
+        const title = "Web Push example";
+
+        return self.registration.showNotification(title, {
+            body,
+        });
+    };
+    console.log(event);
+    if (event.data) {
+        const message = event.data.text();
+        event.waitUntil(sendNotification(message));
+    }
 });
 
 self.addEventListener('sync', function(sync_event) {
