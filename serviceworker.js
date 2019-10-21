@@ -33,7 +33,7 @@ self.addEventListener('push', function(event) {
     }
     const sendNotification = body => {
         // you could refresh a notification badge here with postMessage API
-        const title = "Web Push example";
+        const title = "We Need: List Updated";
 
         return self.registration.showNotification(title, {
             body,
@@ -42,7 +42,18 @@ self.addEventListener('push', function(event) {
     console.log(event);
     if (event.data) {
         const message = event.data.text();
-        event.waitUntil(sendNotification(message));
+        try {
+            const data = JSON.parse(message);
+            let text = data.msg;
+            let status = data.status;
+            let title = 'We Need: New Item';
+            if (status == 'delete') {
+                title = 'We Need: Item Purchased';
+            }
+            event.waitUntil(sendNotification(text));
+        } catch (e) {
+            console.log(e);
+        }
     }
 });
 

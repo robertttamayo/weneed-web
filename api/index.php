@@ -105,6 +105,7 @@ if ($action == "update_user_firebase_token") {
     if (isset($_POST["item_is_purchased"])) {
         $item_info["item_is_purchased"] = settype($_POST["item_is_purchased"], "integer");
     }
+    echo json_encode($item_info);
     execute_modify_item($item_info);
 }
 function execute_update_user_firebase_token($user, $token) {
@@ -160,6 +161,11 @@ function execute_modify_item($item_info) {
     $data = $db->execute("SELECT * FROM $db->item_table WHERE $db->item_id = $item_id");
 
     echo $data;
+    if ($item_info['item_is_purchased'] == 1) {
+        handle_push_delete(json_decode($data, true)[0]);
+    } else {
+        echo "it is not 1";
+    }
 }
 function helper_get_update_string($item_info) {
     $updates = "";
@@ -185,8 +191,8 @@ function handle_push_add($item_data){
     $user_id = $item_data['item_user_id'];
     $sql = "SELECT user_id FROM userbase
     WHERE userbase.user_account_id = $account_id
+    AND userbase.user_id != $user_id
     ";
-    // AND userbase.user_id != $user_id";
     try {
         $conn = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -207,11 +213,15 @@ function handle_push_add($item_data){
         }
         // next, get all notification data for all user_ids
         $sql = "SELECT * FROM sub_base WHERE sub_base.user_id IN ($user_ids_csv)";
-        echo $sql;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $notifications = [];
+        $pay_data = [
+            "msg" => "We need $item_name",
+            "status" => "add"
+        ];
+        $payload = json_encode($pay_data);
         foreach($rows as $key => $val) {
             $notifications[] = [
                 'subscription' => Subscription::create([ // this is the structure for the working draft from october 2018 (https://www.w3.org/TR/2018/WD-push-api-20181026/) 
@@ -221,7 +231,7 @@ function handle_push_add($item_data){
                         'auth' => $val['auth']
                     ],
                 ]),
-                'payload' => "{msg:'$item_name was added to your list!'}",
+                'payload' => $payload,
             ];
         }
         $auth = [
@@ -248,9 +258,106 @@ function handle_push_add($item_data){
             $endpoint = $report->getRequest()->getUri()->__toString();
 
             if ($report->isSuccess()) {
-                echo "[v] Message sent successfully for subscription {$endpoint}.";
+                // echo "[v] Message sent successfully for subscription {$endpoint}.";
             } else {
-                echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+                // echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+            }
+        }
+
+        /**
+         * send one notification and flush directly
+         */
+        // $sent = $webPush->sendNotification(
+        //     $notifications[0]['subscription'],
+        //     $notifications[0]['payload'], // optional (defaults null)
+        //     true // optional (defaults false)
+        // );
+
+
+    } catch (PDOException $e) {
+        echo "DIDN'T WORK because Connection failed: " . $e->getMessage();
+    }
+    $conn = null;
+    // return $data;
+}
+
+function handle_push_delete($item_data){
+    // get all users in account_id except the current user_id
+    $item_name = $item_data['item_name'];
+    $account_id =  $item_data['item_account_id'];
+    $user_id = $item_data['item_user_id'];
+    $sql = "SELECT user_id FROM userbase
+    WHERE userbase.user_account_id = $account_id
+    AND userbase.user_id != $user_id
+    ";
+    try {
+        $conn = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $user_ids = [];
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $user_ids_csv = "";
+        foreach($rows as $row => $val) {
+            $user_ids[] = $val['user_id'];
+        }
+        $size = sizeof($user_ids);
+        for($i = 0; $i < $size; $i++) {
+            $user_ids_csv .= $user_ids[$i];
+            if ($i != ($size - 1)) {
+                $user_ids_csv .= ",";
+            }
+        }
+        // next, get all notification data for all user_ids
+        $sql = "SELECT * FROM sub_base WHERE sub_base.user_id IN ($user_ids_csv)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $notifications = [];
+        $pay_data = [
+            "msg" => "We now have $item_name",
+            "status" => "delete"
+        ];
+        $payload = json_encode($pay_data);
+        foreach($rows as $key => $val) {
+            $notifications[] = [
+                'subscription' => Subscription::create([ // this is the structure for the working draft from october 2018 (https://www.w3.org/TR/2018/WD-push-api-20181026/) 
+                    "endpoint" => $val['endpoint'],
+                    "keys" => [
+                        'p256dh' => $val['p256dh'],
+                        'auth' => $val['auth']
+                    ],
+                ]),
+                'payload' => $payload
+            ];
+        }
+        $auth = [
+            'VAPID' => [
+                'subject' => 'https://www.weneedapp.com/',
+                'publicKey' => PUBLIC_KEY, // don't forget that your public key also lives in app.js
+                'privateKey' => PRIVATE_KEY, // in the real world, this would be in a secret file
+            ],
+        ];
+        $webPush = new WebPush($auth);
+        // echo "created webpush";die;
+        // send multiple notifications with payload
+        foreach ($notifications as $notification) {
+            $webPush->sendNotification(
+                $notification['subscription'],
+                $notification['payload'] // optional (defaults null)
+            );
+        }
+        /**
+         * Check sent results
+         * 
+         */
+        foreach ($webPush->flush() as $report) {
+            $endpoint = $report->getRequest()->getUri()->__toString();
+
+            if ($report->isSuccess()) {
+                // echo "[v] Message sent successfully for subscription {$endpoint}.";
+            } else {
+                // echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
             }
         }
 
