@@ -43,7 +43,8 @@ export class Actions extends React.Component {
                 item_name: itemData.item_name,
                 item_user_id: itemData.item_user_id
             }
-            $('input[name="item_name"]').val('').focus();
+            this.setState({item_name: ''});
+            this.nameInput.focus(); 
             this.props.onAddToList(item);
             // $(document).trigger('add_item', itemData);
         });
@@ -62,6 +63,7 @@ export class Actions extends React.Component {
                     </div>
                     <form method="post" className="add-new-item" onSubmit={this.addNewItem}>
                         <input required 
+                        ref={(input) => { this.nameInput = input; }} 
                         type="text" 
                         value={this.state.item_name} 
                         onChange={this.onChange} 
@@ -75,5 +77,8 @@ export class Actions extends React.Component {
         } else {
             return '';
         }
+    }
+    componentDidMount() {
+        this.nameInput.focus(); 
     }
 }
