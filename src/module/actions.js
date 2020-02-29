@@ -46,7 +46,6 @@ export class Actions extends React.Component {
             this.setState({item_name: ''});
             this.nameInput.focus(); 
             this.props.onAddToList(item);
-            // $(document).trigger('add_item', itemData);
         });
     }
     render() {
@@ -79,6 +78,8 @@ export class Actions extends React.Component {
         }
     }
     componentDidMount() {
-        this.nameInput.focus(); 
+        if (this.nameInput) {
+            this.nameInput.focus(); 
+        }
     }
 }
