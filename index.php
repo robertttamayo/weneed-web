@@ -11,8 +11,6 @@
     <link rel="apple-touch-icon" href="ic_laucher192.png">
 </head>
 <body>
-    <?php include 'embeds/header.html'; ?>
-
     <div id="app"></div>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->

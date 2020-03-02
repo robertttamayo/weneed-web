@@ -4,8 +4,17 @@ import {ShoppingList} from "./module/shopping-list";
 import {LoginForm} from "./module/login-form";
 import {Actions} from "./module/actions";
 import {Header} from "./module/header";
+import {Reports} from "./module/reports";
+import {ShoppingHistory} from "./module/history";
+
 import {endpoints} from "./module/endpoints";
 import {getCookie, setCookie} from "./module/cookies";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 class App extends React.Component {
     constructor(props){
@@ -18,6 +27,7 @@ class App extends React.Component {
         this.onUpdateList = this.onUpdateList.bind(this);
         this.onAddToList = this.onAddToList.bind(this);
         this.updateItem = this.updateItem.bind(this);
+        this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     
         let user_data = null;
 
@@ -32,10 +42,10 @@ class App extends React.Component {
         this.state = {
             items: [],
             user_data,
+            mobileMenuOpen: false,
         }
     }
     onLogin() {
-        console.log('on login called');
         let user_data = JSON.parse(getCookie('weneed_user'))[0];
         this.setState({user_data});
         this.fetchItems();
@@ -50,9 +60,13 @@ class App extends React.Component {
             items: [],
         });
     }
+    toggleMobileMenu() {
+        this.setState(prevState => ({
+            mobileMenuOpen: !prevState.mobileMenuOpen
+        }));
+    }
     updateItem(data){
         let url = endpoints.modify_item;
-        // console.log(data);
         $.ajax(url, {
             data,
             method: "POST"
@@ -67,7 +81,7 @@ class App extends React.Component {
             }
             $(document).trigger('update_items_db', {items});
         }, (_error)=>{
-            console.log(_error);
+            console.error(_error);
         });
     }
     onAddToList(item){
@@ -93,45 +107,60 @@ class App extends React.Component {
                 this.setState({items});
                 $(document).trigger('update_items_db', {items});
             } catch (e) {
-                console.log(e, response);
+                console.error(e, response);
             }
         });
     }
     render(){
         return (
-            <React.Fragment>
-                {ReactDOM.createPortal(
+            <Router>
+                <div className="application-container" data-menu-open={this.state.mobileMenuOpen}>
                     <Header
-                    onShowSignOut={this.onShowSignOut}
-                    onShowSignIn={this.onShowSignIn}
-                    />, document.getElementById('header-actions'))}
-                <div className="weneed-app">
-                    {(this.state.user_data) ? ('') : (
-                    <div id="login-modal">
-                        <LoginForm 
-                        onLogin={this.onLogin}/>
-                    </div>
-                    )}
+                        onShowSignOut={this.onShowSignOut}
+                        onShowSignIn={this.onShowSignIn}
+                        toggleMobileMenu={this.toggleMobileMenu}
+                        mobileMenuOpen={this.mobileMenuOpen}
+                        username={this.state.user_data && this.state.user_data.user_name || null}
+                    />
 
-                    <div className="shopping-list-wrapper">
-                        <div id="shopping-list-actions">
-                            <Actions 
-                            user={this.state.user_data}
-                            onAddToList={this.onAddToList}/>
-                        </div>
+                    <Switch>
+                        <Route path="/login">
+                            <div id="login-modal">
+                                <LoginForm 
+                                onLogin={this.onLogin}/>
+                            </div>
+                        </Route>
+                        <Route path="/reports">
+                            <Reports 
+                                user={this.state.user_data}
+                            />
+                        </Route>
+                        <Route path="/history">
+                            <ShoppingHistory user={this.state.user_data}/>
+                        </Route>
+                        <Route path="/">
+                            <div className="weneed-app">
+                                <div className="shopping-list-wrapper">
+                                    <div id="shopping-list-actions">
+                                        <Actions 
+                                        user={this.state.user_data}
+                                        onAddToList={this.onAddToList}/>
+                                    </div>
 
-                        {(this.state.user_data) ? (
-                        <div id="shopping-list-container">
-                            
-                            <ShoppingList
-                            items={this.state.items}
-                            updateItem={this.updateItem}/>
-                        </div>
-                        ) : ('')
-                        }
-                    </div>
-                </div>
-            </React.Fragment>   
+                                    {(this.state.user_data) ? (
+                                        <div id="shopping-list-container">
+                                            <ShoppingList
+                                            items={this.state.items}
+                                            updateItem={this.updateItem}/>
+                                        </div>
+                                    ) : ('')
+                                    }
+                                </div>
+                            </div>
+                        </Route>
+                    </Switch>
+                </div>   
+            </Router>
         );
     }
     componentDidMount(){
@@ -141,19 +170,3 @@ class App extends React.Component {
     }
 }
 ReactDOM.render(<App />, document.getElementById('app'));
-
-// if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', function() {
-//         navigator.serviceWorker.register('/sw.js').then(function(registration) {
-//         // Registration was successful
-//         console.log(registration);
-//         console.log('ServiceWorker registration successful with scope: ', registration.scope);
-//         }, function(err) {
-//         // registration failed :(
-//         console.log('ServiceWorker registration failed: ', err);
-//         });
-//     });
-// } else {
-//     console.log('something happened');
-// }
-

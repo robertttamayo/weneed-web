@@ -1,8 +1,9 @@
 import React from "react";
 import { endpoints } from "./endpoints";
 import {setCookie} from "./cookies";
+import { withRouter } from "react-router";
 
-export class LoginForm extends React.Component {
+class Main extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,7 +36,6 @@ export class LoginForm extends React.Component {
     }).then((response) => {
       try {
         let data = JSON.parse(response);
-        console.log('data', data);
         if (data.length && data.length == 1) {
           setCookie('weneed_user', JSON.stringify(data), 365);
           $(document).trigger('register_user_db', {
@@ -44,13 +44,13 @@ export class LoginForm extends React.Component {
             user_account_id: data[0].user_account_id,
           });
           this.props.onLogin();
+          this.props.history.push('/');
         } else {
           alert("Sorry, the username or password was incorrect.");
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
-      // ReactDOM.render(React.createElement(ShoppingList, { items: data }), document.getElementById('shopping-list-container'));
     });
   }
 
@@ -72,3 +72,4 @@ export class LoginForm extends React.Component {
   }
 }
 
+export const LoginForm = withRouter(Main);

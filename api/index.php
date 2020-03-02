@@ -107,6 +107,8 @@ if ($action == "update_user_firebase_token") {
     }
     echo json_encode($item_info);
     execute_modify_item($item_info);
+} else if ($action == 'get_history') {
+    execute_get_account_history($account_id);
 }
 function execute_update_user_firebase_token($user, $token) {
     $db = new DB;
@@ -146,6 +148,19 @@ function execute_get_account_items($account_id) {
     WHERE 
     $db->item_table.$db->item_account_id = $db->account_table.$db->account_id
     AND $db->item_table.$db->item_is_purchased = 0";
+
+    $data = $db->execute($sql);
+    echo $data;
+}
+function execute_get_account_history($account_id) {
+    $db = new DB;
+    $sql = "SELECT item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status from itembase where item_is_purchased = 0
+    union
+    select item_name, item_is_purchased, item_date_purchased as item_date, \"blue\" as item_status from itembase where item_is_purchased = 1 
+    union
+    select item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status from itembase where item_is_purchased = 1
+    order by item_date desc
+    ";
 
     $data = $db->execute($sql);
     echo $data;

@@ -1,8 +1,13 @@
 import React from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
+import { withRouter } from "react-router";
 
-import {getCookie, setCookie} from "./cookies";
-
-export class Header extends React.Component {
+class Main extends React.Component {
     constructor(props) {
         super(props);
 
@@ -17,30 +22,45 @@ export class Header extends React.Component {
         this.props.onShowSignOut();
     }
     toggleMobileMenu() {
-        $('body').toggleClass('mobile-menu-open');
+        this.props.toggleMobileMenu();
     }
     render(){
-        if (this.props.username) {
-            return (
-                <div className="menu-wrap-wrap">
-                    <div className="mobile-menu-trigger" onClick={this.toggleMobileMenu}><i className="fas fa-bars"></i></div>
-                    <div className="menu-wrap">
-                        <div className="user-info">
-                            <div className="user-name">{this.props.username}</div>
-                            <div className="sign-out" onClick={this.handleSignOut}>Sign Out</div>
+        return (
+            <div id="header">
+                <div className="title-section">
+                    <div className="title">We Need</div>
+                    <div className="subtitle">A free, shared shopping list for you and your gang</div>
+                </div>
+                <div id="header-actions">
+                {
+                    (this.props.username) ? (
+                        <div className="menu-wrap-wrap">
+                            <div className="mobile-menu-trigger" onClick={this.toggleMobileMenu}><i className="fas fa-bars"></i></div>
+                            <div className="menu-wrap">
+                                <div className="user-info">
+                                    <div className="user-name">{this.props.username}</div>
+                                    <div className="view-reports">
+                                        <Link to="/reports">Reports</Link>
+                                        </div>
+                                    <div className="history">
+                                        <Link to="/history">History</Link>
+                                    </div>
+                                    <div className="sign-out" onClick={this.handleSignOut}>
+                                        <Link to="/login">Sign Out</Link>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ) : ( 
+                        <div className="user-info">
+                            <div className="sign-in">
+                                <Link to="/login">Sign In</Link></div>
+                        </div>
+                    )
+                }
                 </div>
-            );
-        } else {
-            return (
-                <div className="user-info">
-                    <div className="sign-in" onClick={this.handleSignIn}>Sign In</div>
-                </div>
-            );
-        }
-        
+            </div>
+        );
     }
 }
-
-// ReactDOM.render(<Header />, document.getElementById('header-actions'));
+export const Header = withRouter(Main);

@@ -196,7 +196,7 @@ div#header {
         background: white;
         padding: 20px;
     }
-    .mobile-menu-open {
+    [data-menu-open="true"] {
         .menu-wrap {
             display: block;
         }
@@ -204,4 +204,14 @@ div#header {
     .mobile-menu-trigger {
         color: $light;
     }
+}
+#header {
+    #header-actions {
+        
+    }
+}
+
+.timeline {
+    width: 320px;
+    margin: auto;
 }
