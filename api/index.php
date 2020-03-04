@@ -58,6 +58,35 @@ class DB {
     }
 }
 
+class ReportingDB extends DB {
+    function execute($sql, $param_values = []) {
+        try {
+            $conn = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
+            // set the PDO error mode to exception
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $stmt = $conn->prepare($sql);
+            $size = sizeof($param_values);
+            for ($i = 0; $i < $size; $i++) {
+                $key = $param_values[$i]['key'];
+                $value = $param_values[$i]['value'];
+                $stmt->bindParam($param_values[$i]['key'], $param_values[$i]['value']);
+            }
+            $stmt->execute();
+            try {
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data = $rows;
+            } catch (Exception $e) {
+                echo "ERROR occurred when reading from database: " . $e->getMessage();
+            }
+            
+        } catch (PDOException $e) {
+            echo "DIDN'T WORK because Connection failed: " . $e->getMessage();
+        }
+        $conn = null;
+        return $data;
+    }
+}
+
 class Item {
     public $item_name = "";
     public $item_date_added = "";
@@ -71,6 +100,7 @@ if (isset($_POST["action"])) {
 }
 if (isset($_POST["account_id"])) {
     $account = $_POST["account_id"];
+    $account_id = $_POST["account_id"];
 }
 if (isset($_POST["user_id"])) {
     $user = $_POST["user_id"];
@@ -109,7 +139,10 @@ if ($action == "update_user_firebase_token") {
     execute_modify_item($item_info);
 } else if ($action == 'get_history') {
     execute_get_account_history($account_id);
+} else if ($action == 'reporting') {
+    execute_bundle_reporting_data($account_id);
 }
+
 function execute_update_user_firebase_token($user, $token) {
     $db = new DB;
     $sql = "UPDATE userbase SET $db->user_firebase_token = '$token' WHERE $db->user_id = $user";
@@ -154,17 +187,27 @@ function execute_get_account_items($account_id) {
 }
 function execute_get_account_history($account_id) {
     $db = new DB;
-    $sql = "SELECT item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status from itembase where item_is_purchased = 0
+    $sql = "SELECT item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status 
+        from itembase 
+        where item_is_purchased = 0
+        and item_account_id = $account_id
     union
-    select item_name, item_is_purchased, item_date_purchased as item_date, \"blue\" as item_status from itembase where item_is_purchased = 1 
+        select item_name, item_is_purchased, item_date_purchased as item_date, \"blue\" as item_status 
+        from itembase 
+        where item_is_purchased = 1
+        and item_account_id = $account_id 
     union
-    select item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status from itembase where item_is_purchased = 1
+        select item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status 
+        from itembase 
+        where item_is_purchased = 1
+        and item_account_id = $account_id
     order by item_date desc
     ";
 
     $data = $db->execute($sql);
     echo $data;
 }
+
 function execute_modify_item($item_info) {
     $db = new DB;
 
@@ -198,6 +241,78 @@ function helper_get_update_string($item_info) {
     return $updates;
 }
 
+/**
+ * REPORTING functions do not echo data, they bundle the data and send it in one chunk
+ */
+function execute_bundle_reporting_data($account_id){
+    $data = [];
+    $data['distinct_item_count'] = reporting_execute_get_distinct_item_count($account_id);
+    $items_dates = reporting_execute_get_items_dates($account_id);
+    $data['user_transactions'] = reporting_execute_get_user_transaction_counts($account_id);
+    $data['items_dates'] = reporting_collapse_item_dates($items_dates);
+    echo json_encode($data);
+}
+function reporting_execute_get_distinct_item_count($account_id) {
+    $db = new ReportingDB;
+    $sql = "SELECT item_name, count(item_name) as item_count 
+    from itembase 
+    where item_account_id = $account_id
+    group by item_name
+    order by item_count desc
+    ";
+    $data = $db->execute($sql);
+    return $data;
+}
+function reporting_execute_get_user_transaction_counts($account_id) {
+    $db = new ReportingDB;
+    $sql = "SELECT  i.item_purchased_by as transaction_user_id, 
+                    \"purchased\" as user_transaction, 
+                    count(i.item_purchased_by) as user_transaction_count, 
+                    (select u.user_name 
+                        from userbase u 
+                        where u.user_id = i.item_purchased_by) as user_name 
+                    from itembase i 
+                    where i.item_account_id = $account_id
+                    group by user_name
+            union
+                select i.item_user_id as transaction_user_id,  
+                    \"added\" as user_transaction, 
+                    count(i.item_user_id) as user_transaction_count, 
+                    (select u.user_name 
+                        from userbase u 
+                        where u.user_id = i.item_user_id) as user_name 
+                    from itembase i 
+                    where i.item_account_id = $account_id
+            group by i.item_user_id
+    ";
+    $data = $db->execute($sql);
+    return $data;
+}
+function reporting_execute_get_items_dates($account_id) {
+    $db = new ReportingDB;
+    $sql = "SELECT item_name, item_date_added, item_date_purchased
+    FROM itembase
+    WHERE item_account_id = $account_id
+    ORDER BY item_name
+    ";
+    $data = $db->execute($sql);
+    return $data;
+}
+function reporting_collapse_item_dates($items) {
+    $data = [];
+    $current_name = '';
+    foreach($items as $item) {
+        if (strtolower($item['item_name']) != $current_name) {
+            $current_name = strtolower($item['item_name']);
+            $data[$current_name] = [];
+        }
+        $data[$current_name][] = [
+            'date_added' => $item['item_date_added'],
+            'date_purchased' => $item['item_date_purchased']
+        ];
+    }
+    return $data;
+}
 
 function handle_push_add($item_data){
     // get all users in account_id except the current user_id

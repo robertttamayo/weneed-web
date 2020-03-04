@@ -210,8 +210,29 @@ div#header {
         
     }
 }
-
-.timeline {
+.shopping-history-container {
     width: 320px;
     margin: auto;
+}
+.timeline-top {
+    @include flex();
+    @include justify-content(space-between);
+    > div {
+        width: 50%;
+        text-align: center;
+    }
+}
+.searchHistory, .filters {
+    margin-bottom: 30px;
+}
+
+.timeline {
+    width: 100%;
+    margin: auto;
+}
+
+.wide-container {
+    max-width: 800px;
+    margin: auto;
+    width: 100%;
 }

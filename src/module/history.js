@@ -15,13 +15,18 @@ class Main extends React.Component {
         this.green = "#00b359";
         this.blue = "#0066cc";
 
+        this.radioStyle = {
+            display: 'block',
+            height: '40px',
+            lineHeight: '40px'
+        }
+
         this.state = {
             item_history: [],
             loading: true,
             searchTerm: '',
             searchDate: '',
-            showOnlyDateAdded: false,
-            showOnlyPurchased: false,
+            item_filter: 'all',
         }
     }
     handlePurchasedRadioChange(event) {
@@ -32,8 +37,13 @@ class Main extends React.Component {
     }
     render(){
         let previousDate = '';
+        const statusColor = this.state.item_filter == 'purchased' ? 'blue' : 'green';
         const filteredList = this.state.item_history.filter((item) => {
-            return item.item_name_lc.indexOf(this.state.searchTerm) != -1;
+            if (this.state.item_filter == 'all') {
+                return item.item_name_lc.indexOf(this.state.searchTerm) != -1;
+            } else {
+                return item.item_status == statusColor && item.item_name_lc.indexOf(this.state.searchTerm) != -1;
+            }
         });
         const purchaseTimelineItems = (filteredList.map((item, index)=> {
             let date = item.item_date == previousDate ? '' : `${item.item_date}`;
@@ -42,7 +52,7 @@ class Main extends React.Component {
             }
             let color = this.green;
             let status = item.item_status;
-            let message = 'added to list';
+            let message = 'added';
             if (status == 'blue') {
                 color = this.blue;
                 message = 'purchased';
@@ -59,18 +69,26 @@ class Main extends React.Component {
                 <div className="searchHistory">
                     <Input placeholder="Search your history" onChange={this.handleOnChange} value={this.state.searchTerm}/>
                 </div>
-                <div class="filters">
-                    <Radio value="all">Show date purchased and date added</Radio>
-                    <Radio value="purchased">Show date purchased only</Radio>
-                    <Radio value="added">Show date added only</Radio>
+                <div className="filters">
+                    <Radio.Group onChange={this.handlePurchasedRadioChange}>
+                        <Radio style={this.radioStyle} value="all">Show all</Radio>
+                        <Radio style={this.radioStyle} value="purchased">Show date purchased only</Radio>
+                        <Radio style={this.radioStyle} value="added">Show date added only</Radio>
+                    </Radio.Group>
                 </div>
                 <div className="timeline">
                     {this.state.loading ? (
                         <div> Loading history... </div>
                     ) : (
-                    <Timeline mode="left">
-                        {purchaseTimelineItems}
-                    </Timeline>
+                        <>
+                            <div className="timeline-top">
+                                <div>Date</div>
+                                <div>Item &amp; action</div>
+                            </div>
+                            <Timeline mode="left">
+                                {purchaseTimelineItems}
+                            </Timeline>
+                        </>
                     )}
                     
                 </div>

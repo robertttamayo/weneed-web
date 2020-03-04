@@ -280,10 +280,45 @@ div#header .subtitle {
     color: #21653f;
   }
 }
-/* line 214, sass/main.scss */
-.timeline {
+/* line 213, sass/main.scss */
+.shopping-history-container {
   width: 320px;
   margin: auto;
+}
+
+/* line 217, sass/main.scss */
+.timeline-top {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+}
+/* line 220, sass/main.scss */
+.timeline-top > div {
+  width: 50%;
+  text-align: center;
+}
+
+/* line 225, sass/main.scss */
+.searchHistory, .filters {
+  margin-bottom: 30px;
+}
+
+/* line 229, sass/main.scss */
+.timeline {
+  width: 100%;
+  margin: auto;
+}
+
+/* line 234, sass/main.scss */
+.wide-container {
+  max-width: 800px;
+  margin: auto;
+  width: 100%;
 }
 
 /*# sourceMappingURL=main.css.map */

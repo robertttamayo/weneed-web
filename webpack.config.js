@@ -14,7 +14,7 @@ module.exports = {
       path: BUILD_DIR,
       publicPath: '/'
     },
-    mode: 'production',
+    mode: 'development',
     module: {
         rules: [
             {

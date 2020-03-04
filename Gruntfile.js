@@ -10,7 +10,7 @@ module.exports = function(grunt) {
                 stats: true
             },
             prod: webpackConfig,
-            dev: Object.assign({ watch: false }, webpackConfig)
+            dev: Object.assign({ watch: true }, webpackConfig)
         },
 
         // compile sass
@@ -43,15 +43,6 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            web: {
-                files: [
-                    'src/*.js',
-                    'src/module/*.js'
-                ],
-                tasks: [
-                    'webpack'
-                ]
-            },
             css: {
                 files: [
                     'assets/css/*.scss',
@@ -80,5 +71,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', ['webpack', 'sass', 'cssmin', 'watch']);
+    grunt.registerTask('web', ['webpack']);
+    grunt.registerTask('default', ['sass', 'cssmin', 'watch']);
 };
