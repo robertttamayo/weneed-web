@@ -250,6 +250,7 @@ function execute_bundle_reporting_data($account_id){
     $items_dates = reporting_execute_get_items_dates($account_id);
     $data['user_transactions'] = reporting_execute_get_user_transaction_counts($account_id);
     $data['items_dates'] = reporting_collapse_item_dates($items_dates);
+    $data['earliest_date'] = reporting_execute_get_earliest_date($account_id)[0]['earliest_date'];
     echo json_encode($data);
 }
 function reporting_execute_get_distinct_item_count($account_id) {
@@ -290,11 +291,18 @@ function reporting_execute_get_user_transaction_counts($account_id) {
 }
 function reporting_execute_get_items_dates($account_id) {
     $db = new ReportingDB;
-    $sql = "SELECT item_name, item_date_added, item_date_purchased
-    FROM itembase
-    WHERE item_account_id = $account_id
-    ORDER BY item_name
+    $sql = "SELECT i.item_name, i.item_date_added, i.item_date_purchased, i.item_user_id, 
+    (select u.user_name from userbase u where u.user_id = i.item_user_id) as item_user_name
+    FROM itembase i
+    WHERE i.item_account_id = $account_id
+    ORDER BY i.item_name
     ";
+    $data = $db->execute($sql);
+    return $data;
+}
+function reporting_execute_get_earliest_date($account_id) {
+    $db = new ReportingDB;
+    $sql = "SELECT min(item_date_added) as earliest_date from itembase where item_account_id = $account_id";
     $data = $db->execute($sql);
     return $data;
 }
@@ -308,7 +316,9 @@ function reporting_collapse_item_dates($items) {
         }
         $data[$current_name][] = [
             'date_added' => $item['item_date_added'],
-            'date_purchased' => $item['item_date_purchased']
+            'date_purchased' => $item['item_date_purchased'],
+            'item_user_id' => $item['item_user_id'],
+            'item_user_name' => $item['item_user_name'],
         ];
     }
     return $data;

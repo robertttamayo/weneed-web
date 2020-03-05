@@ -236,3 +236,15 @@ div#header {
     margin: auto;
     width: 100%;
 }
+.reports {
+    @include flex();
+    .reports-main {
+        width: 60%;
+        .ant-card {
+            margin-bottom: 20px;
+        }
+    }
+    .reports-quick {
+        width: calc(40% - 20px);
+    }
+}

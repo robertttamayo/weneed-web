@@ -321,4 +321,25 @@ div#header .subtitle {
   width: 100%;
 }
 
+/* line 239, sass/main.scss */
+.reports {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+/* line 241, sass/main.scss */
+.reports .reports-main {
+  width: 60%;
+}
+/* line 243, sass/main.scss */
+.reports .reports-main .ant-card {
+  margin-bottom: 20px;
+}
+/* line 247, sass/main.scss */
+.reports .reports-quick {
+  width: calc(40% - 20px);
+}
+
 /*# sourceMappingURL=main.css.map */
