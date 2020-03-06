@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ItemPieChart } from "./reports/itempiechart";
+import { ItemLineChart } from "./reports/itemlinechart";
 import { ItemUsers } from "./reports/itemusers";
 import { ItemFrequencyList } from "./reports/itemfrequencylist";
 import { DatePicker } from "antd";
@@ -17,6 +18,8 @@ class Main extends React.Component {
         super(props);
         this.onRangeChange = this.onRangeChange.bind(this);
         this.onRangeOK = this.onRangeOK.bind(this);
+        this.backToList = this.backToList.bind(this);
+        this.fetchReportingData = this.fetchReportingData.bind(this);
 
         this.dateFormat = 'YYYY-MM-DD';
 
@@ -25,6 +28,7 @@ class Main extends React.Component {
             user_transactions: [],
             distinct_item_count: [],
             earliest_date: null,
+            toDate: null,
         }
     }
     backToList(){
@@ -32,9 +36,36 @@ class Main extends React.Component {
     }
     onRangeChange(value, dateString) {
         console.log(dateString);
-        this.fromDate = dateString[0];
-        this.toDate = dateString[1];
-
+        this.setState({
+            loading: true,
+            toDate: dateString[1]
+        });
+        this.fetchReportingData(dateString[0], dateString[1]);
+    }
+    fetchReportingData(fromDate, toDate){
+        let data = {
+            account_id: this.props.user.user_account_id,
+            action: 'reporting',
+            from_date: fromDate || '',
+            to_date: toDate || '',
+        }
+        $.ajax(endpoints.main, {
+            method: 'POST',
+            data
+        }).then((results) => {
+            try {
+                let data = JSON.parse(results);
+                const { items_dates, user_transactions, distinct_item_count, earliest_date } = data;
+                this.setState({
+                    items_dates,
+                    user_transactions,
+                    distinct_item_count,
+                    earliest_date,
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        });
     }
     onRangeOK(value) {
         console.log('on okay', value);
@@ -50,6 +81,18 @@ class Main extends React.Component {
                             defaultValue={[moment(this.state.earliest_date, this.dateFormat), moment(new Date())]}
                             onChange={this.onRangeChange}
                             onOk={this.onRangeOk}
+                            ranges={{
+                                All: [moment(this.state.earliest_date, this.dateFormat), moment()],
+                                'Last Month': [moment().subtract('1', 'month'), moment()],
+                                'Last 3 Months': [
+                                    moment().subtract('3', 'months'),
+                                    moment()
+                                ],
+                                'Last 1 Year': [
+                                    moment().subtract('1', 'year'),
+                                    moment()
+                                ],
+                              }}
                         />
                     )}
                 </div>
@@ -59,10 +102,12 @@ class Main extends React.Component {
                             <h2>Most frequent items</h2>
                             <ItemFrequencyList 
                             distinct_item_count={this.state.distinct_item_count}
-                            items_dates={this.state.items_dates}/>
+                            items_dates={this.state.items_dates}
+                            toDate={this.state.toDate}/>
                         </div>
                     </div>
                     <div className="reports-quick">
+                        <ItemLineChart />
                         <ItemPieChart />
                         <ItemUsers />
                     </div>
@@ -72,26 +117,7 @@ class Main extends React.Component {
     }
     componentDidMount(){
         console.log('reports did mount');
-        $.ajax(endpoints.main, {
-            method: 'POST',
-            data: {
-                account_id: this.props.user.user_account_id,
-                action: 'reporting'
-            }
-        }).then((results) => {
-            try {
-                let data = JSON.parse(results);
-                const { items_dates, user_transactions, distinct_item_count, earliest_date } = data;
-                this.setState({
-                    items_dates,
-                    user_transactions,
-                    distinct_item_count,
-                    earliest_date,
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        });
+        this.fetchReportingData();
     }
 }
 

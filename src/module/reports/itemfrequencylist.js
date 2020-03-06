@@ -6,7 +6,7 @@ export class ItemFrequencyList extends React.Component {
         super(props);
     }
     render(){
-        const today = new Date();
+        const today = this.props.toDate ? new Date(this.props.toDate) : new Date();
         const cards = this.props.distinct_item_count
                         .filter(item => item.item_count > 1)
                         .map((item) => {

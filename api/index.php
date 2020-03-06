@@ -140,7 +140,13 @@ if ($action == "update_user_firebase_token") {
 } else if ($action == 'get_history') {
     execute_get_account_history($account_id);
 } else if ($action == 'reporting') {
-    execute_bundle_reporting_data($account_id);
+    if (isset($_POST['to_date']) && isset($_POST['from_date']) ) {
+        $from_date = $_POST['from_date'];
+        $to_date = $_POST['to_date'];
+        execute_bundle_reporting_data($account_id, $from_date, $to_date);
+    } else {
+        echo "Error: no from date or to date set";
+    }
 }
 
 function execute_update_user_firebase_token($user, $token) {
@@ -195,7 +201,7 @@ function execute_get_account_history($account_id) {
         select item_name, item_is_purchased, item_date_purchased as item_date, \"blue\" as item_status 
         from itembase 
         where item_is_purchased = 1
-        and item_account_id = $account_id 
+        and item_account_id = $account_id
     union
         select item_name, item_is_purchased, item_date_added as item_date, \"green\" as item_status 
         from itembase 
@@ -244,27 +250,43 @@ function helper_get_update_string($item_info) {
 /**
  * REPORTING functions do not echo data, they bundle the data and send it in one chunk
  */
-function execute_bundle_reporting_data($account_id){
+function execute_bundle_reporting_data($account_id, $from_date = '', $to_date = ''){
+    try {
     $data = [];
-    $data['distinct_item_count'] = reporting_execute_get_distinct_item_count($account_id);
-    $items_dates = reporting_execute_get_items_dates($account_id);
-    $data['user_transactions'] = reporting_execute_get_user_transaction_counts($account_id);
+    $data['distinct_item_count'] = reporting_execute_get_distinct_item_count($account_id, $from_date, $to_date);
+    $items_dates = reporting_execute_get_items_dates($account_id, $from_date, $to_date);
+    $data['user_transactions'] = reporting_execute_get_user_transaction_counts($account_id, $from_date, $to_date);
     $data['items_dates'] = reporting_collapse_item_dates($items_dates);
-    $data['earliest_date'] = reporting_execute_get_earliest_date($account_id)[0]['earliest_date'];
+    if ($from_date != '') {
+        $data['earliest_date'] = $from_date;
+    } else {
+        $data['earliest_date'] = reporting_execute_get_earliest_date($account_id)[0]['earliest_date'];
+    }
     echo json_encode($data);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 }
-function reporting_execute_get_distinct_item_count($account_id) {
+function reporting_execute_get_distinct_item_count($account_id, $from_date = '', $to_date = '') {
+    $date_range_query = '';
+    if ($to_date != '' && $from_date != '') {
+        $date_range_query = " AND item_date_added BETWEEN '$from_date' AND '$to_date' ";
+    }
     $db = new ReportingDB;
     $sql = "SELECT item_name, count(item_name) as item_count 
     from itembase 
-    where item_account_id = $account_id
+    where item_account_id = $account_id $date_range_query
     group by item_name
     order by item_count desc
     ";
     $data = $db->execute($sql);
     return $data;
 }
-function reporting_execute_get_user_transaction_counts($account_id) {
+function reporting_execute_get_user_transaction_counts($account_id, $from_date = '', $to_date = '') {
+    $date_range_query = '';
+    if ($to_date != '' && $from_date != '') {
+        $date_range_query = " AND i.item_date_added BETWEEN '$from_date' AND '$to_date' ";
+    }
     $db = new ReportingDB;
     $sql = "SELECT  i.item_purchased_by as transaction_user_id, 
                     \"purchased\" as user_transaction, 
@@ -273,7 +295,7 @@ function reporting_execute_get_user_transaction_counts($account_id) {
                         from userbase u 
                         where u.user_id = i.item_purchased_by) as user_name 
                     from itembase i 
-                    where i.item_account_id = $account_id
+                    where i.item_account_id = $account_id $date_range_query 
                     group by user_name
             union
                 select i.item_user_id as transaction_user_id,  
@@ -283,18 +305,22 @@ function reporting_execute_get_user_transaction_counts($account_id) {
                         from userbase u 
                         where u.user_id = i.item_user_id) as user_name 
                     from itembase i 
-                    where i.item_account_id = $account_id
+                    where i.item_account_id = $account_id $date_range_query 
             group by i.item_user_id
     ";
     $data = $db->execute($sql);
     return $data;
 }
-function reporting_execute_get_items_dates($account_id) {
+function reporting_execute_get_items_dates($account_id, $from_date = '', $to_date = '') {
+    $date_range_query = '';
+    if ($to_date != '' && $from_date != '') {
+        $date_range_query = " AND item_date_added BETWEEN '$from_date' AND '$to_date' ";
+    }
     $db = new ReportingDB;
     $sql = "SELECT i.item_name, i.item_date_added, i.item_date_purchased, i.item_user_id, 
     (select u.user_name from userbase u where u.user_id = i.item_user_id) as item_user_name
     FROM itembase i
-    WHERE i.item_account_id = $account_id
+    WHERE i.item_account_id = $account_id $date_range_query 
     ORDER BY i.item_name
     ";
     $data = $db->execute($sql);
