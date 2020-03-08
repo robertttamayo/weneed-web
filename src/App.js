@@ -124,21 +124,7 @@ class App extends React.Component {
                     />
 
                     <Switch>
-                        <Route path="/login">
-                            <div id="login-modal">
-                                <LoginForm 
-                                onLogin={this.onLogin}/>
-                            </div>
-                        </Route>
-                        <Route path="/reports">
-                            <Reports 
-                                user={this.state.user_data}
-                            />
-                        </Route>
-                        <Route path="/history">
-                            <ShoppingHistory user={this.state.user_data}/>
-                        </Route>
-                        <Route path="/">
+                        <Route path="/" exact>
                             <div className="weneed-app">
                                 <div className="shopping-list-wrapper">
                                     <div id="shopping-list-actions">
@@ -157,6 +143,20 @@ class App extends React.Component {
                                     }
                                 </div>
                             </div>
+                        </Route>
+                        <Route path="/login">
+                            <div id="login-modal">
+                                <LoginForm 
+                                onLogin={this.onLogin}/>
+                            </div>
+                        </Route>
+                        <Route path="/reports">
+                            <Reports 
+                                user={this.state.user_data}
+                            />
+                        </Route>
+                        <Route path="/history">
+                            <ShoppingHistory user={this.state.user_data}/>
                         </Route>
                     </Switch>
                 </div>   
