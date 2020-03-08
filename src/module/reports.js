@@ -1,11 +1,10 @@
 import React from "react";
 
 import { ItemPieChart } from "./reports/itempiechart";
-import { ItemLineChart } from "./reports/itemlinechart";
 import { ItemUsers } from "./reports/itemusers";
 import { ItemFrequencyList } from "./reports/itemfrequencylist";
 import { Loading } from "./loading";
-import { DatePicker } from "antd";
+import { DatePicker, PageHeader, Card, Select, Radio } from "antd";
 import { withRouter } from "react-router";
 
 import { endpoints } from "./endpoints";
@@ -13,6 +12,8 @@ import { endpoints } from "./endpoints";
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
+const { Option } = Select;
+
 class Main extends React.Component {
     constructor(props){
         super(props);
@@ -20,6 +21,8 @@ class Main extends React.Component {
         this.onRangeOK = this.onRangeOK.bind(this);
         this.backToList = this.backToList.bind(this);
         this.fetchReportingData = this.fetchReportingData.bind(this);
+        this.onSortChange = this.onSortChange.bind(this);
+        this.onSortTypeChange = this.onSortTypeChange.bind(this);
 
         this.dateFormat = 'YYYY-MM-DD';
 
@@ -31,6 +34,8 @@ class Main extends React.Component {
             toDate: null,
             chartRenderKey: 0,
             loading: true,
+            sortType: 'occurence',
+            sort: 'most'
         }
     }
     backToList(){
@@ -64,10 +69,22 @@ class Main extends React.Component {
                     distinct_item_count,
                     earliest_date,
                     loading: false,
+                    sort: 'most',
+                    sortType: 'occurence',
                 });
             } catch (e) {
                 console.error(e);
             }
+        });
+    }
+    onSortTypeChange(value) {
+        this.setState({
+            sortType: value
+        });
+    }
+    onSortChange(event) {
+        this.setState({
+            sort: event.target.value
         });
     }
     onRangeOK(value) {
@@ -75,26 +92,28 @@ class Main extends React.Component {
     }
 
     render(){
-        if (this.state.loading) {
-            return (
-                <Loading title="Loading Reports..."/>
-            );
-        } else {
-            const pieChartData = this.state.distinct_item_count.filter((item, index) => {
-                    return index < 10; // top 10 items only
-                })
-                .map(item => {
-                    return {
-                        name: item.item_name,
-                        value: parseInt(item.item_count)
-                    }
-                });
-            return (
-                <div className="reporting wide-container">
-                    <h1>Reports</h1>
-                    <div className="reports-date-filter">
-                        {this.state.earliest_date && (
+        const pieChartData = this.state.distinct_item_count.filter((item, index) => {
+                return index < 10; // top 10 items only
+            })
+            .map(item => {
+                return {
+                    name: item.item_name,
+                    value: parseInt(item.item_count)
+                }
+            });
+        return (
+            <div className="reporting wide-container">
+                <PageHeader
+                ghost={true}
+                onBack={this.backToList}
+                title="Reports"
+                subTitle="View shopping information"
+                >
+                    {this.state.earliest_date && (
+                        <div className="reports-dates">
+                            <h3>Date range: </h3>
                             <RangePicker 
+                                key="1"
                                 defaultValue={[moment(this.state.earliest_date, this.dateFormat), moment(new Date())]}
                                 onChange={this.onRangeChange}
                                 onOk={this.onRangeOk}
@@ -111,35 +130,61 @@ class Main extends React.Component {
                                     ],
                                 }}
                             />
-                        )}
+                        </div>
+                    )}
+                    <div className="reports-options">
+                        <h3>Sort by: </h3>
+                        <Radio.Group onChange={this.onSortChange} value={this.state.sort}>
+                            <Radio value="most">Most</Radio>
+                            <Radio value="least">Least</Radio>
+                        </Radio.Group>
+                        <Select defaultValue="occurence" onChange={this.onSortTypeChange}>
+                            <Option value="occurence">Occurring</Option>
+                            <Option value="frequency">Frequent</Option>
+                            <Option value="recency">Recent</Option>
+                        </Select>
                     </div>
-                    <div className="reports">
-                        <div className="reports-main">
-                            <div className="reports-most-frequent">
-                                <h2>Most frequent items</h2>
-                                <ItemFrequencyList 
-                                distinct_item_count={this.state.distinct_item_count}
-                                items_dates={this.state.items_dates}
-                                toDate={this.state.toDate}/>
+                </PageHeader>
+                <div className="reports">
+                    { this.state.loading ? (
+                        <Loading title="Loading Reports..."/>
+                    ) : (
+                        <>
+                            <div className="reports-main">
+                                <Card>
+                                    <div className="reports-most-frequent">
+                                        <h2>
+                                            Item {this.state.sortType}:&nbsp;
+                                            {this.state.sort} to {this.state.sort == 'most' ? 'least' : 'most'}
+                                        </h2>
+                                        <ItemFrequencyList 
+                                        sort={this.state.sort}
+                                        sortType={this.state.sortType}
+                                        distinct_item_count={this.state.distinct_item_count}
+                                        items_dates={this.state.items_dates}
+                                        toDate={this.state.toDate}/>
+                                    </div>
+                                </Card>
                             </div>
-                        </div>
-                        <div className="reports-quick">
-                            <ItemLineChart 
-                                distinct_item_count={this.state.distinct_item_count}
-                            />
-
-                            {pieChartData.length > 0 && (
-                                <ItemPieChart 
-                                    distinct_item_count={pieChartData}
-                                />
-                            )}
-
-                            <ItemUsers />
-                        </div>
-                    </div>
+                            <div className="reports-quick">
+                                <Card>
+                                    <ItemUsers 
+                                        user_transactions={this.state.user_transactions}
+                                    />
+                                </Card>
+                                {pieChartData.length > 0 && (
+                                    <Card>
+                                        <ItemPieChart 
+                                            distinct_item_count={pieChartData}
+                                        />
+                                    </Card>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
-            )
-        }
+            </div>
+        )
     }
     componentDidMount(){
         console.log('reports did mount');

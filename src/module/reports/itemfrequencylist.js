@@ -8,7 +8,6 @@ export class ItemFrequencyList extends React.Component {
     render(){
         const today = this.props.toDate ? new Date(this.props.toDate) : new Date();
         const cards = this.props.distinct_item_count
-                        .filter(item => item.item_count > 1)
                         .map((item) => {
                             let key = item.item_name.toLowerCase();
                             let dates = this.props.items_dates[key];
@@ -44,7 +43,30 @@ export class ItemFrequencyList extends React.Component {
                             });
                             item.users = users;
                             item.highestUser = highestUser;
+                            item.item_count = parseInt(item.item_count);
                             return item;
+                        })
+                        .sort((a, b) => {
+                            if (this.props.sortType == 'recency') {
+                                if (this.props.sort == 'most') {
+                                    return (a.last_added.getTime() < b.last_added.getTime()) ? 1 : -1;
+                                } else {
+                                    return (a.last_added.getTime() > b.last_added.getTime()) ? 1 : -1;
+                                }
+                            } else if (this.props.sortType == 'occurence') {
+                                if (this.props.sort == 'most') {
+                                    return (a.item_count < b.item_count) ? 1 : -1;
+                                } else {
+                                    return (a.item_count > b.item_count) ? 1 : -1;
+                                }
+                            } else if (this.props.sortType == 'frequency') {
+                                if (this.props.sort == 'most') {
+                                    return (a.frequency > b.frequency) ? 1 : -1;
+                                } else {
+                                    return (b.frequency < b.frequency) ? 1 : -1;
+                                }
+                            }
+                            return 0;
                         })
                         .map((item, index)=>{
                             return (

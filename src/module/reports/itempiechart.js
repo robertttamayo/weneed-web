@@ -1,18 +1,3 @@
-// import React, { PureComponent } from "react";
-
-
-// export class ItemPieChart extends React.Component {
-//     constructor(props){
-//         super(props);
-//     }
-//     render(){
-//         return (
-//             <div className="item-pie-chart">
-                
-//             </div>
-//         )
-//     }
-// }
 import React, { PureComponent } from 'react';
 import {
   PieChart, Pie, Legend, Tooltip,
@@ -22,7 +7,6 @@ import {
 export class ItemPieChart extends React.Component {
     constructor(props){
         super(props);
-        console.log(props);
         this.state = {
             distinct_item_count: this.props.distinct_item_count
         }
@@ -34,24 +18,18 @@ export class ItemPieChart extends React.Component {
     }
     render() {
         const frequencyData = this.props.distinct_item_count ? this.props.distinct_item_count : [];
-            console.log(frequencyData);
         return (
             <div className="item-pie-chart">
-                {this.state.distinct_item_count && `Top ${this.state.distinct_item_count.length} Items`}
-                <PieChart width={400} height={400}>
-                    {/* <Pie dataKey="value" 
-                    isAnimationActive={false} 
-                    data={data01} cx={200} cy={200} 
-                    outerRadius={80} 
-                    fill="#8884d8" 
-                    label />
-                    <Tooltip /> */}
+                <h2>
+                    {this.state.distinct_item_count && `Top ${this.state.distinct_item_count.length} Items`}
+                </h2>
+                <PieChart width={320} height={320}>
                     <Pie 
                         key={this.props.chartRenderKey}
                         dataKey="value" 
                         isAnimationActive={false} 
                         data={frequencyData}
-                        cx={200} cy={200} 
+                        cx={160} cy={160} 
                         outerRadius={80} 
                         fill="#8884d8" 
                         label />

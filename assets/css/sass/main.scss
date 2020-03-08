@@ -239,14 +239,17 @@ div#header {
 .reports {
     @include flex();
     .reports-main {
-        width: 60%;
+        width: 50%;
         .ant-card {
             margin-bottom: 20px;
         }
     }
     .reports-quick {
-        width: calc(40% - 20px);
+        width: 50%;
     }
+}
+.reports-options {
+    margin-top: 10px;
 }
 // loading
 .lds-ring {
