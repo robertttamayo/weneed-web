@@ -135,6 +135,9 @@ if ($action == "update_user_firebase_token") {
     if (isset($_POST["item_is_purchased"])) {
         $item_info["item_is_purchased"] = settype($_POST["item_is_purchased"], "integer");
     }
+    if (isset($_POST['item_purchased_by'])) {
+        $item_info['item_purchased_by'] = settype($_POST['item_purchased_by'], 'integer');
+    }
     echo json_encode($item_info);
     execute_modify_item($item_info);
 } else if ($action == 'get_history') {
@@ -213,14 +216,33 @@ function execute_get_account_history($account_id) {
     $data = $db->execute($sql);
     echo $data;
 }
+function execute_delete_item($item_info) {
+    $db = new DB;
 
+    $item_id = $item_info["item_id"];
+    $sql = "DELETE FROM itembase WHERE $db->item_id = $item_id";
+
+    $db->execute($sql);
+    $data = $db->execute("SELECT * FROM $db->item_table WHERE $db->item_id = $item_id");
+
+    echo $data;
+    if ($item_info['item_is_purchased'] == 1) {
+        handle_push_delete(json_decode($data, true)[0]);
+    } else {
+        echo "it is not 1";
+    }
+}
 function execute_modify_item($item_info) {
     $db = new DB;
 
     $item_id = $item_info["item_id"];
     $updates = helper_get_update_string($item_info);
-    $sql = "UPDATE $db->item_table SET $updates WHERE $db->item_id = $item_id";
 
+    $sql = "UPDATE $db->item_table SET ";
+    if ($item_info['item_is_purchased'] == 1) {
+        $sql .= " item_date_purchased = CURDATE(), ";
+    }
+    $sql .= " $updates WHERE $db->item_id = $item_id";
     $db->execute($sql);
     $data = $db->execute("SELECT * FROM $db->item_table WHERE $db->item_id = $item_id");
 
@@ -355,6 +377,10 @@ function handle_push_add($item_data){
     $item_name = $item_data['item_name'];
     $account_id =  $item_data['item_account_id'];
     $user_id = $item_data['item_user_id'];
+
+    $user_name = '';
+    $user_name_sql = "SELECT u.user_name FROM userbase u WHERE u.user_id = $user_id";
+
     $sql = "SELECT user_id FROM userbase
     WHERE userbase.user_account_id = $account_id
     AND userbase.user_id != $user_id
@@ -362,6 +388,15 @@ function handle_push_add($item_data){
     try {
         $conn = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // get username of user who purchased item
+        $stmt = $conn->prepare($user_name_sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach($rows as $row => $val) {
+            $user_name = $val['user_name'];
+        }
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $user_ids = [];
@@ -384,7 +419,7 @@ function handle_push_add($item_data){
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $notifications = [];
         $pay_data = [
-            "msg" => "We need $item_name",
+            "msg" => "We need $item_name. Added by $user_name",
             "status" => "add"
         ];
         $payload = json_encode($pay_data);
@@ -451,7 +486,10 @@ function handle_push_delete($item_data){
     // get all users in account_id except the current user_id
     $item_name = $item_data['item_name'];
     $account_id =  $item_data['item_account_id'];
-    $user_id = $item_data['item_user_id'];
+    $user_id = $item_data['item_purchased_by'];
+    $user_name = '';
+    $user_name_sql = "SELECT u.user_name FROM userbase u WHERE u.user_id = $user_id";
+
     $sql = "SELECT user_id FROM userbase
     WHERE userbase.user_account_id = $account_id
     AND userbase.user_id != $user_id
@@ -459,6 +497,15 @@ function handle_push_delete($item_data){
     try {
         $conn = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // get username of user who purchased item
+        $stmt = $conn->prepare($user_name_sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach($rows as $row => $val) {
+            $user_name = $val['user_name'];
+        }
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $user_ids = [];
@@ -475,13 +522,16 @@ function handle_push_delete($item_data){
             }
         }
         // next, get all notification data for all user_ids
-        $sql = "SELECT * FROM sub_base WHERE sub_base.user_id IN ($user_ids_csv)";
+        $sql = "SELECT s.*, u.user_name 
+        FROM sub_base s, userbase u 
+        WHERE s.user_id IN ($user_ids_csv) 
+        AND s.user_id = u.user_id";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $notifications = [];
         $pay_data = [
-            "msg" => "We now have $item_name",
+            "msg" => "$user_name just purchased $item_name",
             "status" => "delete"
         ];
         $payload = json_encode($pay_data);

@@ -67,6 +67,10 @@ class App extends React.Component {
     }
     updateItem(data){
         let url = endpoints.modify_item;
+        if (data.item_is_purchased == "1") {
+            console.log(data, this.state.user_data.user_id);
+            data.item_purchased_by = this.state.user_data.user_id
+        }
         $.ajax(url, {
             data,
             method: "POST"
