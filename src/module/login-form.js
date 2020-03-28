@@ -56,17 +56,19 @@ class Main extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="login-form-form" onSubmit={this.handleSubmit}>
         <label>
-          Username:
+          <span>Username:</span>
           <input type="text" placeholder="Enter your username" name="username" value={this.state.value} onChange={this.handleChange} />
         </label>
         <label>
-          Password:
+          <span>Password:</span>
           <input type="password" placeholder="Enter your password" name="password" value={this.state.password} onChange={this.handleChange} />
         </label>
-        <input type="submit" name="submit" value="Sign In" />
-        <input type="button" name="createaccount" value="Create Account" />
+        <div className="login-form-buttons">
+          <input type="submit" name="submit" value="Sign In" />
+          {/* <input type="button" name="createaccount" value="Create Account" /> */}
+        </div>
       </form>
     );
   }

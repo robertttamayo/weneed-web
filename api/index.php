@@ -133,10 +133,14 @@ if ($action == "update_user_firebase_token") {
         $item_info["item_id"] = $item_id;
     }
     if (isset($_POST["item_is_purchased"])) {
-        $item_info["item_is_purchased"] = settype($_POST["item_is_purchased"], "integer");
+        $item_is_purchased = $_POST["item_is_purchased"];
+        settype($item_is_purchased, "integer");
+        $item_info["item_is_purchased"] = $item_is_purchased;
     }
     if (isset($_POST['item_purchased_by'])) {
-        $item_info['item_purchased_by'] = settype($_POST['item_purchased_by'], 'integer');
+        $item_purchased_by = $_POST["item_purchased_by"];
+        settype($item_purchased_by, "integer");
+        $item_info["item_purchased_by"] = $item_purchased_by;
     }
     echo json_encode($item_info);
     execute_modify_item($item_info);
@@ -188,8 +192,9 @@ function execute_get_account_items($account_id) {
     $db = new DB;
     $sql = "SELECT * FROM $db->item_table, $db->account_table
     WHERE 
-    $db->item_table.$db->item_account_id = $db->account_table.$db->account_id
-    AND $db->item_table.$db->item_is_purchased = 0";
+    $db->item_table.$db->item_account_id = $account_id
+    AND $db->item_table.$db->item_is_purchased = 0
+    AND $db->account_table.account_id = $account_id";
 
     $data = $db->execute($sql);
     echo $data;

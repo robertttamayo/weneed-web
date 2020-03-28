@@ -4,6 +4,29 @@ import {Card} from 'antd';
 export class ItemFrequencyList extends React.Component {
     constructor(props){
         super(props);
+        this.sortItems = this.sortItems.bind(this);
+    }
+    sortItems(a,b){
+        if (this.props.sortType == 'recency') {
+            if (this.props.sort == 'most') {
+                return (a.last_added.getTime() < b.last_added.getTime()) ? 1 : -1;
+            } else {
+                return (a.last_added.getTime() > b.last_added.getTime()) ? 1 : -1;
+            }
+        } else if (this.props.sortType == 'occurence') {
+            if (this.props.sort == 'most') {
+                return (a.item_count < b.item_count) ? 1 : -1;
+            } else {
+                return (a.item_count > b.item_count) ? 1 : -1;
+            }
+        } else if (this.props.sortType == 'frequency') {
+            if (this.props.sort == 'most') {
+                return (a.frequency > b.frequency) ? 1 : -1;
+            } else {
+                return (b.frequency < b.frequency) ? 1 : -1;
+            }
+        }
+        return 0;
     }
     render(){
         const today = this.props.toDate ? new Date(this.props.toDate) : new Date();
@@ -46,28 +69,7 @@ export class ItemFrequencyList extends React.Component {
                             item.item_count = parseInt(item.item_count);
                             return item;
                         })
-                        .sort((a, b) => {
-                            if (this.props.sortType == 'recency') {
-                                if (this.props.sort == 'most') {
-                                    return (a.last_added.getTime() < b.last_added.getTime()) ? 1 : -1;
-                                } else {
-                                    return (a.last_added.getTime() > b.last_added.getTime()) ? 1 : -1;
-                                }
-                            } else if (this.props.sortType == 'occurence') {
-                                if (this.props.sort == 'most') {
-                                    return (a.item_count < b.item_count) ? 1 : -1;
-                                } else {
-                                    return (a.item_count > b.item_count) ? 1 : -1;
-                                }
-                            } else if (this.props.sortType == 'frequency') {
-                                if (this.props.sort == 'most') {
-                                    return (a.frequency > b.frequency) ? 1 : -1;
-                                } else {
-                                    return (b.frequency < b.frequency) ? 1 : -1;
-                                }
-                            }
-                            return 0;
-                        })
+                        .sort((a, b) => this.sortItems(a, b))
                         .map((item, index)=>{
                             return (
                                 <Card key={index} title={`#${index + 1}. ${item.item_name}`}>

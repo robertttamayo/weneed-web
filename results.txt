@@ -1,0 +1,11 @@
+
+[0m[0m
+[0m  Array[0m
+[0m    #history filters properly[0m
+    [32m  ✓[0m[90m should have 2 items with name "bananas" that are not purchased[0m
+    [32m  ✓[0m[90m should have 1 item with name "bananas" that is purchased[0m
+    [32m  ✓[0m[90m should have 3 items with name "bananas" that are either purchased or not purchased[0m
+
+
+[92m [0m[32m 3 passing[0m[90m (6ms)[0m
+

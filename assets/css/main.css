@@ -16,21 +16,61 @@ body * {
 #login-modal {
   width: 500px;
   max-width: calc(100vw - 40px);
-  background: #7dd4a4;
+  background: #ace5ee;
   padding: 40px;
-  color: white;
-  border: 2px dashed #fff;
-  outline: 2px solid #42c07b;
+  border: #fff;
+  outline: 2px solid #5d8aa8;
   margin: auto;
   margin-top: 50px;
 }
+/* line 34, sass/main.scss */
+#login-modal label {
+  display: block;
+  margin-bottom: 10px;
+  width: 150px;
+}
+/* line 38, sass/main.scss */
+#login-modal label span {
+  display: block;
+  color: #222222;
+  margin-bottom: 5px;
+}
+/* line 43, sass/main.scss */
+#login-modal label input {
+  width: 150px;
+  border: 1px solid #222222;
+}
 
-/* line 36, sass/main.scss */
+/* line 49, sass/main.scss */
+.login-form-buttons {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-align-items: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 10px 0;
+}
+/* line 54, sass/main.scss */
+.login-form-buttons > input {
+  width: 150px;
+  border: 1px solid #5d8aa8;
+  background: #5d8aa8;
+  margin-bottom: 10px;
+  color: white;
+}
+
+/* line 62, sass/main.scss */
 body.login-modal-visible #login-modal {
   display: block;
 }
 
-/* line 39, sass/main.scss */
+/* line 65, sass/main.scss */
 #login-modal form {
   display: -webkit-box;
   display: -moz-box;
@@ -45,7 +85,7 @@ body.login-modal-visible #login-modal {
   align-items: center;
 }
 
-/* line 45, sass/main.scss */
+/* line 71, sass/main.scss */
 div#header {
   display: -webkit-box;
   display: -moz-box;
@@ -59,18 +99,17 @@ div#header {
   -ms-justify-content: space-between;
   justify-content: space-between;
   padding: 20px;
-  background: #7dd4a4;
-  border-bottom: 2px dashed white;
-  outline: 2px solid #42c07b;
+  background: #ace5ee;
+  border-bottom: 2px solid #5d8aa8;
 }
-/* line 53, sass/main.scss */
+/* line 78, sass/main.scss */
 div#header .title {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
   font-size: 40px;
-  color: #21653f;
+  color: #5d8aa8;
 }
-/* line 59, sass/main.scss */
+/* line 84, sass/main.scss */
 div#header .subtitle {
   font-weight: bold;
   font-family: "Poppins", sans-serif;
@@ -79,28 +118,28 @@ div#header .subtitle {
   font-weight: normal;
 }
 
-/* line 68, sass/main.scss */
+/* line 93, sass/main.scss */
 #shopping-list-container li {
   padding: 5px 0;
 }
 
-/* line 72, sass/main.scss */
+/* line 97, sass/main.scss */
 .item-list-purchased {
-  color: #a4d47d;
+  color: #ace5ee;
   font-weight: bold;
   font-style: italic;
   margin-left: 20px;
 }
-/* line 78, sass/main.scss */
+/* line 103, sass/main.scss */
 .item-list-purchased label {
   margin-right: 10px;
 }
-/* line 81, sass/main.scss */
+/* line 106, sass/main.scss */
 .item-list-purchased.is-purchased {
   color: #4489c1;
 }
 
-/* line 88, sass/main.scss */
+/* line 113, sass/main.scss */
 .add-new-item-inline input {
   border: none;
   border-bottom: 2px solid #222222;
@@ -110,20 +149,20 @@ div#header .subtitle {
   font-family: "Poppins", sans-serif;
 }
 
-/* line 96, sass/main.scss */
+/* line 121, sass/main.scss */
 .shopping-list-section {
   width: 320px;
   margin-top: 30px;
 }
-/* line 99, sass/main.scss */
+/* line 124, sass/main.scss */
 .shopping-list-section h1 {
-  color: #21653f;
+  color: #5d8aa8;
   height: 50px;
   line-height: 50px;
   font-size: 28px;
 }
 
-/* line 106, sass/main.scss */
+/* line 131, sass/main.scss */
 .shopping-list-wrapper {
   display: -webkit-box;
   display: -moz-box;
@@ -141,13 +180,13 @@ div#header .subtitle {
   flex-direction: column;
 }
 
-/* line 113, sass/main.scss */
+/* line 138, sass/main.scss */
 .shopping-list-wrap ul {
   padding: 0;
   list-style-type: none;
 }
 
-/* line 118, sass/main.scss */
+/* line 143, sass/main.scss */
 #shopping-list-actions {
   margin-top: 50px;
   margin-left: 50px;
@@ -163,11 +202,11 @@ div#header .subtitle {
   -webkit-align-items: center;
   align-items: center;
 }
-/* line 126, sass/main.scss */
+/* line 151, sass/main.scss */
 #shopping-list-actions .shopping-actions {
   width: 100%;
 }
-/* line 129, sass/main.scss */
+/* line 154, sass/main.scss */
 #shopping-list-actions form.add-new-item {
   display: -webkit-box;
   display: -moz-box;
@@ -175,22 +214,22 @@ div#header .subtitle {
   display: -webkit-flex;
   display: flex;
 }
-/* line 132, sass/main.scss */
+/* line 157, sass/main.scss */
 #shopping-list-actions input[type="text"] {
   width: calc(100% - 80px);
   height: 40px;
   margin: 0;
   border-right: none;
-  border: 1px solid #42c07b;
+  border: 1px solid #5d8aa8;
   font-family: "Poppins", sans-serif;
   text-indent: 15px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-/* line 143, sass/main.scss */
+/* line 168, sass/main.scss */
 #shopping-list-actions input[type="submit"] {
-  border: 1px solid #42c07b;
-  background: #42c07b;
+  border: 1px solid #5d8aa8;
+  background: #5d8aa8;
   color: white;
   font-weight: bold;
   font-size: 16px;
@@ -201,13 +240,13 @@ div#header .subtitle {
   border-bottom-right-radius: 4px;
 }
 
-/* line 157, sass/main.scss */
+/* line 182, sass/main.scss */
 .shopping-actions-header h2 {
   margin-top: 0;
-  color: #21653f;
+  color: #5d8aa8;
 }
 
-/* line 162, sass/main.scss */
+/* line 187, sass/main.scss */
 .item-list-top {
   display: -webkit-box;
   display: -moz-box;
@@ -219,28 +258,56 @@ div#header .subtitle {
   justify-content: space-between;
 }
 
-/* line 166, sass/main.scss */
+/* line 191, sass/main.scss */
 .item-list-bottom {
   color: #aaaaaa;
 }
 
-@media (max-width: 768px) {
-  /* line 170, sass/main.scss */
-  div#header {
-    -ms-align-items: flex-start;
-    -webkit-align-items: flex-start;
-    align-items: flex-start;
-  }
-  /* line 172, sass/main.scss */
-  div#header .title {
-    font-size: 28px;
-  }
-  /* line 175, sass/main.scss */
-  div#header .subtitle {
-    font-size: 18px;
-  }
+/* line 194, sass/main.scss */
+div#header {
+  -ms-align-items: flex-start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+/* line 196, sass/main.scss */
+div#header .title {
+  font-size: 28px;
+}
+/* line 199, sass/main.scss */
+div#header .subtitle {
+  font-size: 18px;
+}
 
-  /* line 179, sass/main.scss */
+/* line 203, sass/main.scss */
+.menu-wrap {
+  display: none;
+  background: white;
+  padding: 20px;
+  position: absolute;
+  right: 0;
+  border: 1px solid #5d8aa8;
+  width: 160px;
+  text-align: right;
+  border-right: none;
+}
+/* line 214, sass/main.scss */
+.menu-wrap .user-info > div {
+  margin-bottom: 5px;
+}
+
+/* line 220, sass/main.scss */
+[data-menu-open="true"] .menu-wrap {
+  display: block;
+}
+
+/* line 224, sass/main.scss */
+.mobile-menu-trigger {
+  color: #5d8aa8;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  /* line 230, sass/main.scss */
   #shopping-list-actions {
     margin-top: 0;
     margin-left: 0;
@@ -248,45 +315,28 @@ div#header .subtitle {
     width: 100%;
   }
 
-  /* line 185, sass/main.scss */
+  /* line 236, sass/main.scss */
   .shopping-list-wrapper {
     padding: 20px;
   }
 
-  /* line 188, sass/main.scss */
+  /* line 239, sass/main.scss */
   .shopping-list-section {
     width: 100%;
   }
 
-  /* line 191, sass/main.scss */
+  /* line 242, sass/main.scss */
   #shopping-list-container {
     width: 100%;
   }
-
-  /* line 194, sass/main.scss */
-  .menu-wrap {
-    display: none;
-    background: white;
-    padding: 20px;
-  }
-
-  /* line 200, sass/main.scss */
-  [data-menu-open="true"] .menu-wrap {
-    display: block;
-  }
-
-  /* line 204, sass/main.scss */
-  .mobile-menu-trigger {
-    color: #21653f;
-  }
 }
-/* line 213, sass/main.scss */
+/* line 252, sass/main.scss */
 .shopping-history-container {
   width: 320px;
   margin: auto;
 }
 
-/* line 217, sass/main.scss */
+/* line 256, sass/main.scss */
 .timeline-top {
   display: -webkit-box;
   display: -moz-box;
@@ -296,32 +346,33 @@ div#header .subtitle {
   -webkit-justify-content: space-between;
   -ms-justify-content: space-between;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
-/* line 220, sass/main.scss */
+/* line 260, sass/main.scss */
 .timeline-top > div {
   width: 50%;
   text-align: center;
 }
 
-/* line 225, sass/main.scss */
+/* line 265, sass/main.scss */
 .searchHistory, .filters {
   margin-bottom: 30px;
 }
 
-/* line 229, sass/main.scss */
+/* line 269, sass/main.scss */
 .timeline {
   width: 100%;
   margin: auto;
 }
 
-/* line 234, sass/main.scss */
+/* line 274, sass/main.scss */
 .wide-container {
   max-width: 800px;
   margin: auto;
   width: 100%;
 }
 
-/* line 239, sass/main.scss */
+/* line 279, sass/main.scss */
 .reports {
   display: -webkit-box;
   display: -moz-box;
@@ -329,25 +380,25 @@ div#header .subtitle {
   display: -webkit-flex;
   display: flex;
 }
-/* line 241, sass/main.scss */
+/* line 281, sass/main.scss */
 .reports .reports-main {
   width: 50%;
 }
-/* line 243, sass/main.scss */
+/* line 283, sass/main.scss */
 .reports .reports-main .ant-card {
   margin-bottom: 20px;
 }
-/* line 247, sass/main.scss */
+/* line 287, sass/main.scss */
 .reports .reports-quick {
   width: 50%;
 }
 
-/* line 251, sass/main.scss */
+/* line 291, sass/main.scss */
 .reports-options {
   margin-top: 10px;
 }
 
-/* line 255, sass/main.scss */
+/* line 295, sass/main.scss */
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -355,7 +406,7 @@ div#header .subtitle {
   height: 80px;
 }
 
-/* line 261, sass/main.scss */
+/* line 301, sass/main.scss */
 .lds-ring div {
   box-sizing: border-box;
   display: block;
@@ -363,23 +414,23 @@ div#header .subtitle {
   width: 64px;
   height: 64px;
   margin: 8px;
-  border: 8px solid #7dd4a4;
+  border: 8px solid #ace5ee;
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #7dd4a4 transparent transparent transparent;
+  border-color: #ace5ee transparent transparent transparent;
 }
 
-/* line 273, sass/main.scss */
+/* line 313, sass/main.scss */
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
 }
 
-/* line 276, sass/main.scss */
+/* line 316, sass/main.scss */
 .lds-ring div:nth-child(2) {
   animation-delay: -0.3s;
 }
 
-/* line 279, sass/main.scss */
+/* line 319, sass/main.scss */
 .lds-ring div:nth-child(3) {
   animation-delay: -0.15s;
 }

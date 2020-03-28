@@ -7,6 +7,10 @@ import {Header} from "./module/header";
 import {Reports} from "./module/reports";
 import {ShoppingHistory} from "./module/history";
 
+import {User} from './model/user';
+import {Item} from './model/item';
+import {List} from './model/list';
+
 import {endpoints} from "./module/endpoints";
 import {getCookie, setCookie} from "./module/cookies";
 import {
@@ -102,7 +106,7 @@ class App extends React.Component {
         $.ajax(endpoints.main, {
             method: 'POST',
             data: {
-                account_id: this.state.user_data.user_id,
+                account_id: this.state.user_data.user_account_id,
                 action: 'get_items',
             },
         }).then((response) => {
@@ -124,7 +128,7 @@ class App extends React.Component {
                         onShowSignIn={this.onShowSignIn}
                         toggleMobileMenu={this.toggleMobileMenu}
                         mobileMenuOpen={this.mobileMenuOpen}
-                        username={this.state.user_data && this.state.user_data.user_name || null}
+                        username={this.state.user_data && this.state.user_data.user_nickname || null}
                     />
 
                     <Switch>
