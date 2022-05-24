@@ -10,7 +10,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "/assets/img/ic_launcher192.png",
+      "src": "/assets/img/weneedicon.png",
       "sizes": "192x192"
     },
     {

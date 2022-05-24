@@ -41,7 +41,8 @@ export class Actions extends React.Component {
                 item_id: itemData.item_id,
                 item_is_purchased: "0",
                 item_name: itemData.item_name,
-                item_user_id: itemData.item_user_id
+                item_user_id: itemData.item_user_id,
+                item_list_id: itemData.item_list_id
             }
             this.setState({item_name: ''});
             this.nameInput.focus(); 
@@ -58,11 +59,11 @@ export class Actions extends React.Component {
                 data-user-name={user.user_name}
                 >
                     <div className="shopping-actions-header">
-                        <h2>What do we need?</h2>
+                        <h2>Quick Add:</h2>
                     </div>
                     <form method="post" className="add-new-item" onSubmit={this.addNewItem}>
                         <input required 
-                        ref={(input) => { this.nameInput = input; }} 
+                        ref={(input) => { this.nameInput = input; }}
                         type="text" 
                         value={this.state.item_name} 
                         onChange={this.onChange} 

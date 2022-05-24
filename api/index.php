@@ -9,6 +9,7 @@ use Minishlink\WebPush\Subscription;
 
 class DB {
     public $item_table = "itembase";
+    public $lists_table = "listbase";
     public $account_table = "accountbase";
     public $user_table = "userbase";
 
@@ -18,6 +19,11 @@ class DB {
     public $item_name = "item_name";
     public $item_account_id = "item_account_id";
     public $item_user_id = "item_user_id";
+    public $item_list_id = "item_list_id";
+
+    public $list_id = "list_id";
+    public $list_name = "list_name";
+    public $list_account_it = "list_account_id";
 
     public $account_id = "account_id";
     public $account_name = "account_name";
@@ -93,6 +99,7 @@ class Item {
     public $item_is_purchased = false;
     public $item_account_id = "";
     public $item_user_id = "";
+    public $item_list_id = "";
 }
 
 if (isset($_POST["action"])) {
@@ -104,6 +111,9 @@ if (isset($_POST["account_id"])) {
 }
 if (isset($_POST["user_id"])) {
     $user = $_POST["user_id"];
+}
+if (isset($_POST["list_id"])) {
+    $list_id = $_POST["list_id"];
 }
 if ($action == "update_user_firebase_token") {
     if (isset($_POST["user_firebase_token"])) {
@@ -125,6 +135,8 @@ if ($action == "update_user_firebase_token") {
 
 } else if ($action == "get_items") {
     execute_get_account_items($account_id);
+} else if ($action == "get_lists") {
+    execute_get_account_lists($account_id);
 } else if ($action == "modify_item") {
     $item_info = [];
     if (isset($_POST["item_id"])) {
@@ -195,6 +207,15 @@ function execute_get_account_items($account_id) {
     $db->item_table.$db->item_account_id = $account_id
     AND $db->item_table.$db->item_is_purchased = 0
     AND $db->account_table.account_id = $account_id";
+
+    $data = $db->execute($sql);
+    echo $data;
+}
+function execute_get_account_lists($account_id) {
+    $db = new DB;
+    $sql = "SELECT * FROM $db->lists_table
+    WHERE 
+    $db->lists_table.list_account_id = $account_id";
 
     $data = $db->execute($sql);
     echo $data;

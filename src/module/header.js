@@ -28,8 +28,8 @@ class Main extends React.Component {
         return (
             <div id="header">
                 <div className="title-section">
-                    <div className="title">Shopping List</div>
-                    <div className="subtitle">Grocery Shop Company</div>
+                    <div className="title">We Need</div>
+                    <div className="subtitle">A Shared Shopping List App</div>
                 </div>
                 <div id="header-actions">
                 {

@@ -8,7 +8,8 @@ export class Item {
         item_user_id,
         item_account_id,
         item_date_purchased,
-        item_purchased_by
+        item_purchased_by,
+        item_list_id
     )
     {
         this.item_id = item_id;
@@ -19,6 +20,7 @@ export class Item {
         this.item_account_id = item_account_id;
         this.item_date_purchased = item_date_purchased;
         this.item_purchased_by = item_purchased_by;
+        this.item_list_id = item_list_id;
     }
     get item_id(){
         return this.item_id;
@@ -44,6 +46,9 @@ export class Item {
     get item_purchased_by(){
         return this.item_purchased_by;
     }
+    get item_list_id(){
+        return this.item_list_id;
+    }
     set item_id(value) {
         this.item_id = value;
     }
@@ -67,5 +72,8 @@ export class Item {
     }
     set item_purchased_by(value) {
         this.item_purchased_by = value;
+    }
+    set item_list_id(value) {
+        this.item_list_id = value;
     }
 }

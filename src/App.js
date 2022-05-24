@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {Lists} from "./module/lists";
 import {ShoppingList} from "./module/shopping-list";
 import {LoginForm} from "./module/login-form";
 import {Actions} from "./module/actions";
@@ -19,12 +20,14 @@ import {
     Route,
     Link
   } from "react-router-dom";
+import { getMaxListeners } from "process";
 
 class App extends React.Component {
     constructor(props){
         super(props);
 
         this.fetchItems = this.fetchItems.bind(this);
+        this.fetchLists = this.fetchLists.bind(this);
         this.onShowSignOut = this.onShowSignOut.bind(this);
         this.onShowSignIn = this.onShowSignIn.bind(this);
         this.onLogin = this.onLogin.bind(this);
@@ -47,6 +50,7 @@ class App extends React.Component {
             items: [],
             user_data,
             mobileMenuOpen: false,
+            lists: [],
         }
     }
     onLogin() {
@@ -102,7 +106,21 @@ class App extends React.Component {
         this.setState({items});
         $(document).trigger('update_items_db', {items});
     }
-    fetchItems() {
+    async fetchLists() {
+        return new Promise(resolve => {
+            $.ajax(endpoints.lists, {
+                method: 'POST',
+                data: {
+                    account_id: this.state.user_data.user_account_id,
+                    action: 'get_lists',
+                },
+            }).then(response => resolve(response));
+        });
+    }
+    async fetchItems() {
+        let listsResponse = await this.fetchLists();
+        let lists = JSON.parse(listsResponse);
+        console.log('lists', lists);
         $.ajax(endpoints.main, {
             method: 'POST',
             data: {
@@ -146,6 +164,12 @@ class App extends React.Component {
                                             <ShoppingList
                                             items={this.state.items}
                                             updateItem={this.updateItem}/>
+                                        </div>
+                                    ) : ('')
+                                    }
+                                    {(this.state.user_data) ? (
+                                        <div id="manage-button" className="sticky-button-mobile">
+                                            +
                                         </div>
                                     ) : ('')
                                     }
